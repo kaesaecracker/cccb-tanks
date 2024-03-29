@@ -1,8 +1,12 @@
 {
-  "name": "Tanks",
-  "version": "1.0.0",
-  "dependencies": {
-    "pngjs": "^0.4.0",
-    "ws": "^0.7.2"
-  }
+    "name": "tanks",
+    "version": "1.0.0",
+    "type": "module",
+    "dependencies": {
+        "pngjs": "7.0.0",
+        "ws": "8.16.0"
+    },
+    "scripts": {
+        "start": "node server.js"
+    }
 }
