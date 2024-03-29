@@ -14,7 +14,7 @@
 
 import {bulletSpeed, map, mapHeight, mapWidth, tankSpeed, tileSize, tileWidth, turnSpeed} from "./settings.js";
 
-import fs from 'fs'
+import fs from 'fs.js'
 import {PNG} from 'pngjs'
 
 import {WebSocketServer} from 'ws'
@@ -389,7 +389,7 @@ server.on('connection', function connection(client) {
         }
     })
 
-    client.on('close', function leaving(client) {
+    client.on('close', function leaving() {
         console.log("user left")
         if (player)
             removePlayer(player.id)
@@ -403,7 +403,7 @@ server.on('connection', function connection(client) {
 
 */
 
-import dgram from 'dgram'
+import dgram from 'dgram.js'
 
 const client = dgram.createSocket('udp4');
 
