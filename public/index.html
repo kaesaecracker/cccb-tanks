@@ -1,170 +1,31 @@
 <!doctype html>
-<meta charset="utf-8">
-<title>Tanks</title>
-<style>
-  html, body {
-    height: 100%;
-  }
+<head>
+    <meta charset="utf-8">
+    <title>Tanks</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="splash"></div>
 
-  body {
-    font-family: sans-serif;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  kbd {
-    background: hsl(0,0%,96%);
-    padding: 10px;
-    display: block;
-    border-radius: 5px;
-    margin: 5px;
-    width: 1.6em;
-    height: 1.3em;
-    text-align: center;
-    box-shadow: 0 1px rgba(0,0,0,.21);
-    user-select: none;
-  }
-
-  kbd.up {
-    margin-left: calc(1.6em + 35px);
-  }
-
-  kbd.space {
-    margin-top: calc(1.3em + 35px);
-    width: 14em;
-  }
-
-  kbd:active {
-    position: relative;
-    top: 2px;
-    background: hsl(0,0%,94%);
-    box-shadow: 0 1px rgba(0,0,0,.13) inset;
-  }
-
-  .controls {
-    display: flex;
-  }
-
-  .control {
-    margin: 0 1em;
-  }
-
-  .control h3 {
-    text-align: center;
-  }
-
-  .row {
-    display: flex;
-  }
-
-  .splash {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(transparent, red);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 500ms;
-  }
-
-  .was-killed .splash {
-    opacity: 1;
-    transition: opacity 120ms;
-  }
-</style>
-
-<div class="splash"></div>
-
-<div class="box">
-  <div class="controls">
-    <div class="control">
-      <div class="row">
-        <kbd class="up">▲</kbd>
-      </div>
-      <div class="row">
-        <kbd>◀</kbd>
-        <kbd>▼</kbd>
-        <kbd>▶</kbd>
-      </div>
-      <h3>Move</h3>
+    <div class="box">
+        <div class="controls">
+            <div class="control">
+                <div class="row">
+                    <kbd class="up">▲</kbd>
+                </div>
+                <div class="row">
+                    <kbd>◀</kbd>
+                    <kbd>▼</kbd>
+                    <kbd>▶</kbd>
+                </div>
+                <h3>Move</h3>
+            </div>
+            <div class="control">
+                <kbd class="space"></kbd>
+                <h3>Fire</h3>
+            </div>
+        </div>
     </div>
-    <div class="control">
-      <kbd class="space"></kbd>
-      <h3>Fire</h3>
-    </div>
-  </div>
-</div>
 
-<script>
-  var body = document.querySelector('body')
-  var splash = document.querySelector('.splash')
-
-  function getShot(){
-    body.classList.add('was-killed')
-  }
-
-  splash.addEventListener('transitionend', function(){
-    console.log("transitionend")
-    body.classList.remove('was-killed')
-  })
-
-  var connection = new WebSocket('ws://172.23.42.133:8001')
-  connection.binaryType = "blob"
-
-  var controls = {
-    37: "left",
-    38: "up",
-    39: "right",
-    40: "down",
-    32: "space",
-    87: "up", // 'w'
-    65: "left", // 'a'
-    83: "down", // 's'
-    68: "right", // 'd'
-  }
-
-  function start(){
-    window.onkeyup = function(event){
-      if(controls[event.keyCode]){
-        connection.send(JSON.stringify({
-          type: 'input-off',
-          value: controls[event.keyCode]
-        }))
-      }
-    }
-    window.onkeydown=function(event){
-      if(controls[event.keyCode]){
-        connection.send(JSON.stringify({
-          type: 'input-on',
-          value: controls[event.keyCode]
-        }))
-      }
-    }
-  }
-
-  connection.onmessage = function(message){
-    message = JSON.parse(message.data)
-
-    console.log(message)
-
-    if(message.type === 'shot')
-      getShot()
-  }
-
-  connection.onopen = function() {
-    var name = ""
-
-    while(!name)
-      name = prompt("Player Name")
-
-    connection.send(JSON.stringify({
-      type: 'name',
-      value: name
-    }))
-    start()
-  }
-</script>
+    <script src="script.js"></script>
+</body>
