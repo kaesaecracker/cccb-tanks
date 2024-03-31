@@ -3,43 +3,41 @@ import {addPlayer, removePlayer, shootBullet, tickPlayers} from "./players.js";
 import {tickBullets} from "./bullets.js";
 import {drawToCanvas} from "./drawer.js";
 
-clearScreen()
-
 let _uid = 0;
 
 function uniqueID() {
     return _uid++
 }
 
-export function onConnection(client){
-    console.log('connection from ', client)
+function onMessage(player, message) {
+    console.log('received: %s', message)
+    message = JSON.parse(message)
+    switch (message.type) {
+        case 'input-on':
+            if (message.value === 'space')
+                shootBullet(player)
+            else
+                player.input[message.value] = true
+            break
+        case 'input-off':
+            player.input[message.value] = false
+            break
+        case 'name':
+            player = addPlayer(uniqueID(), message.value, client)
+            break
+    }
+}
 
+function onClose(player) {
+    console.log("user left")
+    if (player)
+        removePlayer(player.id)
+}
+
+export function onConnection(client) {
     let player
-    client.on('message', function incoming(message) {
-        console.log('received: %s', message)
-
-        message = JSON.parse(message)
-        switch (message.type) {
-            case 'input-on':
-                if (message.value === 'space')
-                    shootBullet(player)
-                else
-                    player.input[message.value] = true
-                break
-            case 'input-off':
-                player.input[message.value] = false
-                break
-            case 'name':
-                player = addPlayer(uniqueID(), message.value, client)
-                break
-        }
-    })
-
-    client.on('close', function leaving() {
-        console.log("user left")
-        if (player)
-            removePlayer(player.id)
-    })
+    client.on('message', message => onMessage(player, message))
+    client.on('close', () => onClose(player))
 }
 
 function tick() {
@@ -48,6 +46,8 @@ function tick() {
     drawToCanvas()
 }
 
-drawToCanvas();
-
-setInterval(tick, 1000 / 25);
+export function start() {
+    clearScreen()
+    drawToCanvas();
+    setInterval(tick, 1000 / 25);
+}
