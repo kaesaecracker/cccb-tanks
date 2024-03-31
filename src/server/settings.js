@@ -1,4 +1,22 @@
-export const map = "\
+
+export const displaySettings = {
+    ip: '172.23.42.29',
+    port: 2342,
+    tileWidth: 8,
+    tileSize: 8,
+};
+
+export const bulletsSettings = {
+    bulletSpeed: 8
+};
+
+export const playerSettings = {
+    tankSpeed: 1.5,
+    turnSpeed: 0.5
+}
+
+const mapWidth = 44;
+const map = "\
 ############################################\
 #...................##.....................#\
 #...................##.....................#\
@@ -21,16 +39,8 @@ export const map = "\
 ############################################\
 ";
 
-
-export const mapWidth = 44;
-export const mapHeight = map.length / mapWidth;
-export const tileWidth = 8;
-export const bulletSpeed = 8;
-export const tankSpeed = 1.5;
-export const turnSpeed = 0.5;
-export const tileSize = 8;
-
-export const displaySettings = {
-    ip: '172.23.42.29',
-    port: 2342
-};
+export const mapSettings = {
+    map,
+    mapWidth,
+    mapHeight: map.length / mapWidth,
+}

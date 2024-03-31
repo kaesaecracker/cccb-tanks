@@ -1,4 +1,4 @@
-import {map, mapHeight, mapWidth, tankSpeed, tileWidth, turnSpeed} from "./settings.js";
+import {displaySettings, mapSettings, playerSettings} from "./settings.js";
 
 export default class PlayerManager {
     players = [];
@@ -7,8 +7,8 @@ export default class PlayerManager {
         const emptyPos = this._findEmptyPos();
         const player = {
             id: id,
-            x: emptyPos[0] * tileWidth,
-            y: emptyPos[1] * tileWidth,
+            x: emptyPos[0] * displaySettings.tileWidth,
+            y: emptyPos[1] * displaySettings.tileWidth,
             dir: randInt(0, 16),
             score: 0,
             input: {},
@@ -35,16 +35,16 @@ export default class PlayerManager {
     _canMove(player, x, y) {
         x = Math.round(x)
         y = Math.round(y)
-        const x0 = Math.floor(x / tileWidth);
-        const x1 = Math.ceil(x / tileWidth);
-        const y0 = Math.floor(y / tileWidth);
-        const y1 = Math.ceil(y / tileWidth);
+        const x0 = Math.floor(x / displaySettings.tileWidth);
+        const x1 = Math.ceil(x / displaySettings.tileWidth);
+        const y0 = Math.floor(y / displaySettings.tileWidth);
+        const y1 = Math.ceil(y / displaySettings.tileWidth);
         const points = [[x0, y0], [x0, y1], [x1, y0], [x1, y1]];
         //check against tilemap
         for (let i = 0; i < points.length; i++) {
             const px = points[i][0];
             const py = points[i][1];
-            if (map[px + mapWidth * py] === '#') {
+            if (mapSettings.map[px + mapSettings.mapWidth * py] === '#') {
                 return false;
             }
         }
@@ -60,7 +60,7 @@ export default class PlayerManager {
             let dx = Math.abs(other.x - p1x);
             let dy = Math.abs(other.y - p1y);
 
-            if (dx < tileWidth && dy < tileWidth) {
+            if (dx < displaySettings.tileWidth && dy < displaySettings.tileWidth) {
                 return false
             }
         }
@@ -71,16 +71,16 @@ export default class PlayerManager {
     _movePlayer(player) {
         // move turret
         if (player.input.left)
-            player.dir = (player.dir + 16 - turnSpeed) % 16
+            player.dir = (player.dir + 16 - playerSettings.turnSpeed) % 16
         if (player.input.right)
-            player.dir = (player.dir + turnSpeed) % 16
+            player.dir = (player.dir + playerSettings.turnSpeed) % 16
 
         // move tank
         if (player.input.up || player.input.down) {
             const direction = player.input.up ? 1 : -1;
             const angle = player.dir / 16 * 2 * Math.PI;
-            const newX = player.x + Math.sin(angle) * direction * tankSpeed;
-            const newY = player.y - Math.cos(angle) * direction * tankSpeed;
+            const newX = player.x + Math.sin(angle) * direction * playerSettings.tankSpeed;
+            const newY = player.y - Math.cos(angle) * direction * playerSettings.tankSpeed;
             if (this._canMove(player, newX, newY)) {
                 player.x = newX
                 player.y = newY
@@ -103,8 +103,8 @@ export default class PlayerManager {
             type: 'shot'
         }))
         const emptyPos = this._findEmptyPos();
-        player.x = emptyPos[0] * tileWidth
-        player.y = emptyPos[1] * tileWidth;
+        player.x = emptyPos[0] * displaySettings.tileWidth
+        player.y = emptyPos[1] * displaySettings.tileWidth;
     }
 
     playerScore(player) {
@@ -114,15 +114,15 @@ export default class PlayerManager {
     //in tile coordinates
     _squareContents(x, y) {
         let result = [];
-        if (map[x + mapWidth * y] === '#') {
+        if (mapSettings.map[x + mapSettings.mapWidth * y] === '#') {
             result.push("#");
         }
         for (let i = 0; i < this.players.length; i++) {
             const p = this.players[i];
-            const x0 = Math.floor(p.x / tileWidth);
-            const x1 = Math.ceil(p.x / tileWidth);
-            const y0 = Math.floor(p.y / tileWidth);
-            const y1 = Math.ceil(p.y / tileWidth);
+            const x0 = Math.floor(p.x / displaySettings.tileWidth);
+            const x1 = Math.ceil(p.x / displaySettings.tileWidth);
+            const y0 = Math.floor(p.y / displaySettings.tileWidth);
+            const y1 = Math.ceil(p.y / displaySettings.tileWidth);
             if ((x0 === x && y0 === y) || (x1 === x && y0 === y) || (x1 === x && y1 === y) || (x0 === x && y1 === y)) {
                 result.push(p);
             }
@@ -132,8 +132,8 @@ export default class PlayerManager {
 
     _findEmptyPos() {
         const candidatePositions = [];
-        for (let i = 0; i < mapWidth; i++) {
-            for (let j = 0; j < mapHeight; j++) {
+        for (let i = 0; i < mapSettings.mapWidth; i++) {
+            for (let j = 0; j < mapSettings.mapHeight; j++) {
                 const contents = this._squareContents(i, j);
                 if (contents.length === 0) {
                     candidatePositions.push([i, j]);

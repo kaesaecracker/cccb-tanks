@@ -1,4 +1,4 @@
-import {bulletSpeed, map, mapWidth, tileSize, tileWidth} from "./settings.js";
+import {bulletsSettings, displaySettings, mapSettings} from "./settings.js";
 
 export default class BulletsManager {
     bullets = [];
@@ -28,9 +28,9 @@ export default class BulletsManager {
     _bulletHits(bullet) {
         const x = Math.round(bullet.x);
         const y = Math.round(bullet.y);
-        const x0 = Math.floor(x / tileWidth);
-        const y0 = Math.floor(y / tileWidth);
-        if (map[x0 + mapWidth * y0] === '#') {
+        const x0 = Math.floor(x /displaySettings.tileWidth);
+        const y0 = Math.floor(y / displaySettings.tileWidth);
+        if (mapSettings.map[x0 + mapSettings.mapWidth * y0] === '#') {
             return true;
         }
 
@@ -42,8 +42,8 @@ export default class BulletsManager {
             const dx = x - other.x;
             const dy = y - other.y;
 
-            if (dx >= 0 && dx < tileWidth &&
-                dy >= 0 && dy < tileWidth) {
+            if (dx >= 0 && dx < displaySettings.tileWidth &&
+                dy >= 0 && dy < displaySettings.tileWidth) {
                 this._playerMgr.killPlayer(other)
                 this._playerMgr.playerScore(bullet.owner)
                 return true
@@ -55,8 +55,8 @@ export default class BulletsManager {
 
     shootBullet(player) {
         const angle = player.dir / 16 * 2 * Math.PI;
-        const newX = player.x + tileSize / 2 + Math.sin(angle) * bulletSpeed;
-        const newY = player.y + tileSize / 2 - Math.cos(angle) * bulletSpeed;
+        const newX = player.x + displaySettings.tileSize / 2 + Math.sin(angle) * bulletsSettings.bulletSpeed;
+        const newY = player.y + displaySettings.tileSize / 2 - Math.cos(angle) * bulletsSettings.bulletSpeed;
 
         this.bullets.push({
             x: newX,

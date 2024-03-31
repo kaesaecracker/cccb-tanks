@@ -1,11 +1,11 @@
-import {displaySettings, mapHeight, mapWidth, tileSize} from "./settings.js";
+import {displaySettings, mapSettings} from "./settings.js";
 import dgram from 'dgram';
 
 export default class Display {
     _client = dgram.createSocket('udp4');
 
-    width = tileSize * mapWidth;
-    height = tileSize * mapHeight;
+    width = displaySettings.tileSize * mapSettings.mapWidth;
+    height = displaySettings.tileSize * mapSettings.mapHeight;
 
     pixels = new Uint8Array(this.width * this.height);
 
@@ -22,8 +22,8 @@ export default class Display {
         packedBytes[3] = 0
         packedBytes[4] = 0
         packedBytes[5] = 0
-        packedBytes[6] = mapWidth / 256
-        packedBytes[7] = mapWidth % 256
+        packedBytes[6] = mapSettings.mapWidth / 256
+        packedBytes[7] = mapSettings.mapWidth % 256
         packedBytes[8] = this.height / 256
         packedBytes[9] = this.height % 256
 

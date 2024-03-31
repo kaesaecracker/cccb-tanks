@@ -15,4 +15,3 @@ app.ws('/', client => tankServer.onConnection(client))
 app.listen(port, () => {
     console.log(`listening on port ${port}`)
 })
-

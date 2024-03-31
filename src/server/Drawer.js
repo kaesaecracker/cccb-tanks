@@ -1,6 +1,6 @@
 import fs from "fs";
 import {PNG} from "pngjs";
-import {map, mapHeight, mapWidth, tileSize} from "./settings.js";
+import {displaySettings, mapSettings} from "./settings.js";
 
 export default class Drawer {
     tankSprite = []
@@ -31,13 +31,13 @@ export default class Drawer {
 
     _drawWall(tile_x, tile_y) {
         let i = 0
-        for (let dy = 0; dy < tileSize; dy++) {
-            for (let dx = i % 2; dx < tileSize; dx += 2, i++) {
+        for (let dy = 0; dy < displaySettings.tileSize; dy++) {
+            for (let dx = i % 2; dx < displaySettings.tileSize; dx += 2, i++) {
                 // y
-                i = (tile_y * tileSize + dy) * this._display.width
+                i = (tile_y * displaySettings.tileSize + dy) * this._display.width
 
                 // x
-                i += tile_x * tileSize + dx
+                i += tile_x * displaySettings.tileSize + dx
 
                 // draw
                 this._display.pixels[i] = 1
@@ -50,8 +50,8 @@ export default class Drawer {
         pixel_y = Math.round(pixel_y)
         dir = Math.round(dir) % 16
 
-        for (let dy = 0; dy < tileSize; dy++) {
-            for (let dx = 0; dx < tileSize; dx++) {
+        for (let dy = 0; dy < displaySettings.tileSize; dy++) {
+            for (let dx = 0; dx < displaySettings.tileSize; dx++) {
                 // y
                 let i = (pixel_y + dy) * this._display.width;
 
@@ -71,17 +71,17 @@ export default class Drawer {
     _tankSpriteAt(dx, dy, dir) {
         // 0 1 2 3 4 5
         // up ...... right
-        const x = (dir % 4) * (tileSize + 1);
-        const y = Math.floor(dir / 4) * (tileSize + 1);
+        const x = (dir % 4) * (displaySettings.tileSize + 1);
+        const y = Math.floor(dir / 4) * (displaySettings.tileSize + 1);
 
         return this.tankSprite[(y + dy) * this.tankSpriteWidth + x + dx]
     }
 
     draw() {
         this._display.clearCanvas();
-        for (let i = 0; i < mapWidth; i++) {
-            for (let j = 0; j < mapHeight; j++) {
-                if (map[i + mapWidth * j] === '#') {
+        for (let i = 0; i < mapSettings.mapWidth; i++) {
+            for (let j = 0; j < mapSettings.mapHeight; j++) {
+                if (mapSettings.map[i + mapSettings.mapWidth * j] === '#') {
                     this._drawWall(i, j);
                 }
             }
@@ -108,7 +108,7 @@ export default class Drawer {
             return b.score - a.score
         })
 
-        for (let i = 0; i < Math.min(playerCopy.length,this. maxRows); i++) {
+        for (let i = 0; i < Math.min(playerCopy.length, this.maxRows); i++) {
             let name = playerCopy[i].name;
             const score = playerCopy[i].score;
 
@@ -124,10 +124,10 @@ export default class Drawer {
         }
 
         if (playerCopy.length < this.maxRows) {
-            const missingRows =this. maxRows - playerCopy.length + 1;
+            const missingRows = this.maxRows - playerCopy.length + 1;
             text += (new Array(missingRows * this.maxLength).join(" "))
         }
 
-        this._display.placeText(text, mapWidth + 1, 1,this.maxLength, this.maxRows - 2)
+        this._display.placeText(text, mapSettings.mapWidth + 1, 1, this.maxLength, this.maxRows - 2)
     }
 }
