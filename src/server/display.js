@@ -1,6 +1,6 @@
 import {mapHeight, mapWidth, tileSize} from "./settings.js";
+import dgram from 'dgram';
 
-import dgram from 'dgram'
 const client = dgram.createSocket('udp4');
 export const width = tileSize * mapWidth;
 export const height = tileSize * mapHeight;

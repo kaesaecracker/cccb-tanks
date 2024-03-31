@@ -1,4 +1,3 @@
-import {WebSocketServer} from "ws";
 import {clearScreen} from "./display.js";
 import {addPlayer, removePlayer, shootBullet, tickPlayers} from "./players.js";
 import {tickBullets} from "./bullets.js";
@@ -6,17 +5,16 @@ import {drawToCanvas} from "./drawer.js";
 
 clearScreen()
 
-// Server for clients
-const server = new WebSocketServer({port: 8001});
 let _uid = 0;
 
 function uniqueID() {
     return _uid++
 }
 
-server.on('connection', function connection(client) {
-    let player
+export function onConnection(client){
+    console.log('connection from ', client)
 
+    let player
     client.on('message', function incoming(message) {
         console.log('received: %s', message)
 
@@ -42,8 +40,7 @@ server.on('connection', function connection(client) {
         if (player)
             removePlayer(player.id)
     })
-})
-
+}
 
 function tick() {
     tickPlayers()

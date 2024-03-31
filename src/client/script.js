@@ -10,7 +10,7 @@ splash.addEventListener('transitionend', function () {
     body.classList.remove('was-killed')
 })
 
-const connection = new WebSocket('ws://vinzenz-lpt2:8001');
+const connection = new WebSocket(`ws://${window.location.hostname}:3000`);
 connection.binaryType = "blob"
 
 const controls = {
