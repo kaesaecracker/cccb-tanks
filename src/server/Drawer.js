@@ -98,36 +98,36 @@ export default class Drawer {
         this._drawScoreboard()
     }
 
-    maxLength = 10;
-    maxRows = 20;
-
     _drawScoreboard() {
-        let text = "";
+        const maxLength = 10;
+        const maxRows = 20;
+
+        const playerRows = maxRows - 4;
+
         const playerCopy = this._playerMgr.players.slice();
         playerCopy.sort(function (a, b) {
             return b.score - a.score
         })
 
-        for (let i = 0; i < Math.min(playerCopy.length, this.maxRows); i++) {
-            let name = playerCopy[i].name;
-            const score = playerCopy[i].score;
+        let text = "  TANKS!  ";
+        for (let i = 0; i < Math.min(playerCopy.length, playerRows); i++) {
+            const score = playerCopy[i].score.toString();
+            const nameLength = maxLength - score.length - 1;
 
-            const textLength = this.maxLength - score.toString().length - 1;
-            const spaces = textLength - name.length + 1;
+            const name = playerCopy[i].name.slice(0, nameLength);
+            const spaces = " ".repeat(nameLength - name.length + 1);
 
-            if (name.length > textLength)
-                name = name.slice(0, textLength) + " "
-            else
-                name += (new Array(spaces + 1).join(" "))
-
-            text += name + score
+            text += name + spaces + score
         }
 
-        if (playerCopy.length < this.maxRows) {
-            const missingRows = this.maxRows - playerCopy.length + 1;
-            text += (new Array(missingRows * this.maxLength).join(" "))
+        if (playerCopy.length < playerRows) {
+            const missingRows = playerRows - playerCopy.length;
+            text += " ".repeat(missingRows * maxLength)
         }
 
-        this._display.placeText(text, mapSettings.mapWidth + 1, 1, this.maxLength, this.maxRows - 2)
+        text += "Join here:"
+        text += " 172.23    .42.96   "
+
+        this._display.placeText(text, mapSettings.mapWidth + 1, 0, maxLength, maxRows)
     }
 }
