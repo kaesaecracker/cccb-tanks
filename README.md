@@ -5,6 +5,12 @@ A tank game for the CCCB Airport Display.
 
 By Felix and [Stephen](https://github.com/increpare).
 
+### Running the server
+
+Build an image using podman: `make container-image`
+
+Run it locally: `make start`
+
 ### Ideas
 - Make the tank slower when you shoot (Denis)
 - Stable Sort the Scoreboard so that the first person

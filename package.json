@@ -9,6 +9,6 @@
         "ws": "8.16.0"
     },
     "scripts": {
-        "start": "node src/server/start.js"
+        "start": "cd src && node host.js"
     }
 }
