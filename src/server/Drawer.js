@@ -3,8 +3,8 @@ import {PNG} from "pngjs";
 import {displaySettings, mapSettings} from "./settings.js";
 
 export default class Drawer {
-    tankSprite = []
-    tankSpriteWidth;
+    _tankSprite = []
+    _tankSpriteWidth;
     _display;
     _playerMgr;
     _bulletMgr;
@@ -22,10 +22,10 @@ export default class Drawer {
                 for (let y = 0; y < this.height; y++) {
                     for (let x = 0; x < this.width; x++, i++) {
                         const idx = (this.width * y + x) << 2;
-                        self.tankSprite[i] = this.data[idx + 2] > 128 ? 1 : 0
+                        self._tankSprite[i] = this.data[idx + 2] > 128 ? 1 : 0
                     }
                 }
-                self.tankSpriteWidth = this.width
+                self._tankSpriteWidth = this.width
             });
     }
 
@@ -74,7 +74,7 @@ export default class Drawer {
         const x = (dir % 4) * (displaySettings.tileSize + 1);
         const y = Math.floor(dir / 4) * (displaySettings.tileSize + 1);
 
-        return this.tankSprite[(y + dy) * this.tankSpriteWidth + x + dx]
+        return this._tankSprite[(y + dy) * this._tankSpriteWidth + x + dx]
     }
 
     draw() {

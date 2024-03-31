@@ -57,7 +57,6 @@ export default class Display {
             packedBytes[n] = text.charCodeAt(i++);
         }
 
-
         this._client.send(packedBytes, 0, packedBytes.length, displaySettings.port, displaySettings.ip);
     }
 

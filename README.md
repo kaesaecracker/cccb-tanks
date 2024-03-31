@@ -16,3 +16,4 @@ Run it locally: `make start`
 - Stable Sort the Scoreboard so that the first person
   getting the highscore stays on top until someone
   scores higher
+- Only allow firing while moving, limited fire rate (vinzenz)
