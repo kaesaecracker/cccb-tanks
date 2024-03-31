@@ -9,35 +9,35 @@ function uniqueID() {
     return _uid++
 }
 
-function onMessage(player, message) {
-    console.log('received: %s', message)
-    message = JSON.parse(message)
-    switch (message.type) {
-        case 'input-on':
-            if (message.value === 'space')
-                shootBullet(player)
-            else
-                player.input[message.value] = true
-            break
-        case 'input-off':
-            player.input[message.value] = false
-            break
-        case 'name':
-            player = addPlayer(uniqueID(), message.value, client)
-            break
-    }
-}
-
-function onClose(player) {
-    console.log("user left")
-    if (player)
-        removePlayer(player.id)
-}
-
 export function onConnection(client) {
     let player
-    client.on('message', message => onMessage(player, message))
-    client.on('close', () => onClose(player))
+
+    function onMessage(message) {
+        console.log('received: %s', message)
+        message = JSON.parse(message)
+        switch (message.type) {
+            case 'input-on':
+                if (message.value === 'space')
+                    shootBullet(player)
+                else
+                    player.input[message.value] = true
+                break
+            case 'input-off':
+                player.input[message.value] = false
+                break
+            case 'name':
+                player = addPlayer(uniqueID(), message.value, client)
+                break
+        }
+    }
+
+    function onClose() {
+        if (player)
+            removePlayer(player.id)
+    }
+
+    client.on('message', onMessage)
+    client.on('close', onClose)
 }
 
 function tick() {

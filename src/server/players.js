@@ -22,6 +22,7 @@ export function addPlayer(id, name, connection) {
 }
 
 export function removePlayer(id) {
+    console.log(`user $(id) left`)
     players.splice(findPlayerIndex(id), 1)
 }
 
