@@ -1,66 +1,60 @@
 const body = document.querySelector('body');
 const splash = document.querySelector('.splash');
 
-function getShot() {
-}
-
 splash.addEventListener('transitionend', function () {
-    console.log('transitionend');
     body.classList.remove('was-killed');
 });
 
 const connection = new WebSocket(`ws://${window.location.hostname}:3000`);
 connection.binaryType = 'blob';
 
-const controls = {
-    37: 'left',
-    38: 'up',
-    39: 'right',
-    40: 'down',
-    32: 'space',
-    87: 'up', // 'w'
-    65: 'left', // 'a'
-    83: 'down', // 's'
-    68: 'right', // 'd'
-};
-
-function start() {
-    window.onkeyup = function (event) {
-        if (controls[event.keyCode]) {
-            connection.send(JSON.stringify({
-                type: 'input-off',
-                value: controls[event.keyCode]
-            }));
-        }
-    };
-    window.onkeydown = function (event) {
-        if (controls[event.keyCode]) {
-            connection.send(JSON.stringify({
-                type: 'input-on',
-                value: controls[event.keyCode]
-            }));
-        }
-    };
-}
-
 connection.onmessage = function (message) {
     message = JSON.parse(message.data);
-
-    console.log(message);
-
+    console.log('got message', {message});
     if (message.type === 'shot')
         body.classList.add('was-killed');
 };
 
-connection.onopen = function () {
-    let name = '';
+const keyEventListener = (type) => (event) => {
+    if (event.defaultPrevented)
+        return;
 
+    const controls = {
+        'ArrowLeft': 'left',
+        'ArrowUp': 'up',
+        'ArrowRight': 'right',
+        'ArrowDown': 'down',
+        'Space': 'space',
+        'KeyW': 'up',
+        'KeyA': 'left',
+        'KeyS': 'down',
+        'KeyD': 'right',
+    };
+
+    const value = controls[event.code];
+    if (!value)
+        return;
+
+    send({type, value});
+};
+
+connection.onopen = () => {
+    let name = getPlayerName();
+    send({type: 'name', value: name});
+
+    window.onkeyup = keyEventListener('input-off');
+    window.onkeydown = keyEventListener('input-on');
+
+    console.log('connection opened, game ready');
+};
+
+function getPlayerName() {
+    let name = '';
     while (!name)
         name = prompt('Player Name');
+    return name;
+}
 
-    connection.send(JSON.stringify({
-        type: 'name',
-        value: name
-    }));
-    start();
-};
+function send(obj) {
+    connection.send(JSON.stringify(obj));
+}
