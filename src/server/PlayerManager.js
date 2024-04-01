@@ -1,11 +1,13 @@
-import {displaySettings, mapSettings} from './settings.js';
+import {displaySettings, mapSettings, playerSettings} from './settings.js';
 
 export default class PlayerManager {
-    _playersToJoin = [];
-    players = [];
+    _players = [];
+    _playersOnField = [];
+    _playersToPlace = [];
 
-    add(player) {
+    join(player) {
         player.score = 0;
+        player.respawnAfter = Date.now();
         player.input = {
             up: false,
             down: false,
@@ -14,31 +16,50 @@ export default class PlayerManager {
             shoot: false
         };
 
-        console.log('adding player to join queue', {name: player.name, x: player.x, y: player.y});
-        this._playersToJoin.push(player);
+        console.log('player joins', {name: player.name});
+        this._players.push(player)
+        this._playersToPlace.push(player);
         return player;
     }
 
-    remove(player) {
+    leave(player) {
         console.log('player left', {name: player.name});
-        this.players = this.players.filter(p => p !== player);
+        this._playersToPlace = this._playersToPlace.filter(p => p !== player);
+        this._playersOnField = this._playersOnField.filter(p => p !== player);
     }
 
     tick() {
-        const joiningPlayer = this._playersToJoin.shift();
-        if (!joiningPlayer)
+        const playerToPlace = this._playersToPlace.shift();
+        if (!playerToPlace)
             return;
 
-        this._resetPosition(joiningPlayer);
-        joiningPlayer.dir = randInt(0, 16);
+        const now = Date.now();
+        if (playerToPlace.respawnAfter > now)
+        {
+            this._playersToPlace.push(playerToPlace);
+            return;
+        }
 
-        console.log('player joins game');
-        this.players.push(joiningPlayer);
+        this._resetPosition(playerToPlace);
+        playerToPlace.dir = randInt(0, 16);
+
+        console.log('player spawns');
+        this._playersOnField.push(playerToPlace);
     }
 
     kill(player) {
         player.connection.send(JSON.stringify({type: 'shot'}));
-        this._resetPosition(player);
+        this._playersOnField = this._playersOnField.filter(p => p !== player);
+        player.respawnAfter =  new Date(new Date().getTime() + (1000 * playerSettings.respawnDelay));
+        this._playersToPlace.push(player);
+    }
+
+    getPlayersOnField(){
+        return this._playersOnField;
+    }
+
+    getAllPlayers() {
+        return this._players;
     }
 
     _resetPosition(player) {
@@ -57,7 +78,7 @@ export default class PlayerManager {
         if (mapSettings.map[x + mapSettings.mapWidth * y] === '#') {
             result.push('#');
         }
-        for (const p of this.players) {
+        for (const p of this.getPlayersOnField()) {
             const x0 = Math.floor(p.x / displaySettings.tileWidth);
             const x1 = Math.ceil(p.x / displaySettings.tileWidth);
             const y0 = Math.floor(p.y / displaySettings.tileWidth);

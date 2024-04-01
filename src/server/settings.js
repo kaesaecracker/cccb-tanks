@@ -11,7 +11,8 @@ export const bulletsSettings = {
 
 export const playerSettings = {
     tankSpeed: 1.5,
-    turnSpeed: 0.5
+    turnSpeed: 0.5,
+    respawnDelay: 3,
 };
 
 const mapWidth = 44;

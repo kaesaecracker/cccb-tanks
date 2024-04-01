@@ -38,14 +38,14 @@ export default class TankServer {
                 break;
             case 'name':
                 player.name = message.value;
-                self._playerManager.add(player);
+                self._playerManager.join(player);
                 break;
             }
         }
 
         function onClose() {
             if (player)
-                self._playerManager.remove(player);
+                self._playerManager.leave(player);
         }
 
         connection.on('message', onMessage);

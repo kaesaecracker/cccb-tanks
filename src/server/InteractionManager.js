@@ -7,7 +7,7 @@ export default class InteractionManager {
     }
 
     tick() {
-        for (const p of this._playerMgr.players) {
+        for (const p of this._playerMgr.getPlayersOnField()) {
             if (!this._movePlayer(p) && p.input.shoot)
                 this._shootBullet(p);
         }
@@ -44,7 +44,7 @@ export default class InteractionManager {
         //check against other players
         const p1x = x;
         const p1y = y;
-        for (const other of this._playerMgr.players) {
+        for (const other of this._playerMgr.getPlayersOnField()) {
             if (other === player)
                 continue;
 

@@ -39,7 +39,7 @@ export default class BulletsManager {
         }
 
         // check against players
-        for (const other of this._playerMgr.players) {
+        for (const other of this._playerMgr.getPlayersOnField()) {
             if (other === bullet.owner) continue;
 
             const dx = x - other.x;

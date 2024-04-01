@@ -86,14 +86,16 @@ export default class Drawer {
                 }
             }
         }
-        for (let i = 0; i < this._playerMgr.players.length; i++) {
-            const p = this._playerMgr.players[i];
+
+        for (const p of this._playerMgr.getPlayersOnField()) {
             this._drawPlayer(p.x, p.y, p.dir);
         }
+
         for (let i = 0; i < this._bulletMgr.bullets.length; i++) {
             const b = this._bulletMgr.bullets[i];
             this._drawBullet(b.x, b.y);
         }
+
         this._display.sendPixels();
         this._drawScoreboard();
     }
@@ -104,7 +106,7 @@ export default class Drawer {
 
         const playerRows = maxRows - 5;
 
-        const playerCopy = this._playerMgr.players.slice();
+        const playerCopy = this._playerMgr.getAllPlayers().slice();
         playerCopy.sort(function (a, b) {
             return b.score - a.score;
         });
