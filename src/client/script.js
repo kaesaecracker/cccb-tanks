@@ -15,6 +15,16 @@ connection.onmessage = function (message) {
         body.classList.add('was-killed');
 };
 
+connection.onerror = event => {
+    console.log('error', event)
+    alert('connection error')
+}
+
+connection.onclose = event => {
+    console.log('closed', event)
+    alert('connection closed - maybe a player with this name is already connected')
+}
+
 const keyEventListener = (type) => (event) => {
     if (event.defaultPrevented)
         return;

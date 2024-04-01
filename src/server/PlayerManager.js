@@ -6,15 +6,28 @@ export default class PlayerManager {
     _playersToPlace = [];
 
     join(player) {
+        const existingPlayer = this._players.find(p => p.name === player.name);
+        if (existingPlayer) {
+            if (existingPlayer.connection !== null)
+                throw new Error('user already connected');
+
+            existingPlayer.connection = player.connection;
+            player = existingPlayer;
+        } else {
+            this._players.push(player);
+        }
+
         console.log('player joins', {name: player.name});
-        this._players.push(player)
         this._playersToPlace.push(player);
+        return player;
     }
 
     leave(player) {
         console.log('player left', {name: player.name});
         this._playersToPlace = this._playersToPlace.filter(p => p !== player);
         this._playersOnField = this._playersOnField.filter(p => p !== player);
+        if (player.score === 0)
+            this._players = this._players.filter(p => p !== player);
     }
 
     tick() {
@@ -32,7 +45,7 @@ export default class PlayerManager {
         this._resetPosition(playerToPlace);
         playerToPlace.dir = randInt(0, 16);
 
-        console.log('player spawns');
+        console.log('player spawns', playerToPlace.name);
         this._playersOnField.push(playerToPlace);
     }
 

@@ -1,5 +1,5 @@
-export default class Player{
-    _connection;
+export default class Player {
+    connection;
     score = 0;
     respawnAfter = 0;
     input = {
@@ -13,6 +13,6 @@ export default class Player{
     shootAfter = 0;
 
     constructor(connection) {
-        this._connection = connection;
+        this.connection = connection;
     }
 }

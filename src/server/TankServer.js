@@ -28,8 +28,8 @@ export default class TankServer {
         let self = this;
 
         function onMessage(message) {
-            console.log('received message:', message);
             message = JSON.parse(message);
+            console.log('received message', {message, player: player.name});
             switch (message.type) {
             case 'input-on':
                 player.input[message.value] = true;
@@ -39,14 +39,21 @@ export default class TankServer {
                 break;
             case 'name':
                 player.name = message.value;
-                self._playerManager.join(player);
+                try {
+                    player = self._playerManager.join(player);
+                } catch (e) {
+                    connection.close();
+                }
+
                 break;
+            default:
+                console.log('unknown command', message);
             }
         }
 
         function onClose() {
-            if (player)
-                self._playerManager.leave(player);
+            player.connection = null;
+            self._playerManager.leave(player);
         }
 
         connection.on('message', onMessage);

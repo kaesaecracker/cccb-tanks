@@ -91,8 +91,7 @@ export default class Drawer {
             this._drawPlayer(p.x, p.y, p.dir);
         }
 
-        for (let i = 0; i < this._bulletMgr.bullets.length; i++) {
-            const b = this._bulletMgr.bullets[i];
+        for (const b of this._bulletMgr.getBullets()) {
             this._drawBullet(b.x, b.y);
         }
 

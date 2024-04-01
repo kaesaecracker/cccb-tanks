@@ -1,7 +1,7 @@
 import {displaySettings, mapSettings} from './settings.js';
 
 export default class BulletsManager {
-    bullets = [];
+    _bullets = [];
     _playerMgr;
 
     constructor(playerMgr) {
@@ -9,15 +9,19 @@ export default class BulletsManager {
     }
 
     tick() {
-        for (const b of this.bullets){
+        for (const b of this._bullets) {
             this._move(b);
             if (this._bulletHits(b))
-                this.bullets.splice(this.bullets.indexOf(b), 1);
+                this._bullets.splice(this._bullets.indexOf(b), 1);
         }
     }
 
-    add(bullet){
-        this.bullets.push(bullet);
+    add(bullet) {
+        this._bullets.push(bullet);
+    }
+
+    getBullets() {
+        return this._bullets;
     }
 
     _move(bullet) {
