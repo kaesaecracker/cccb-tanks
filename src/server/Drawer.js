@@ -99,17 +99,19 @@ export default class Drawer {
     }
 
     _drawScoreboard() {
-        const maxLength = 10;
+        const maxLength = 12;
         const maxRows = 20;
 
-        const playerRows = maxRows - 4;
+        const playerRows = maxRows - 5;
 
         const playerCopy = this._playerMgr.players.slice();
         playerCopy.sort(function (a, b) {
             return b.score - a.score;
         });
 
-        let text = '  TANKS!  ';
+        let text = '';
+        text += '== TANKS! ==';
+        text += '-- scores --';
         for (let i = 0; i < Math.min(playerCopy.length, playerRows); i++) {
             const score = playerCopy[i].score.toString();
             const nameLength = maxLength - score.length - 1;
@@ -125,9 +127,10 @@ export default class Drawer {
             text += ' '.repeat(missingRows * maxLength);
         }
 
-        text += 'Join here:';
-        text += ' 172.23    .42.96   ';
+        text += '--  join  --';
+        text += ' http://127 ';
+        text += ' .23.42.96/ ';
 
-        this._display.placeText(text, mapSettings.mapWidth + 1, 0, maxLength, maxRows);
+        this._display.placeText(text, mapSettings.mapWidth, 0, maxLength, maxRows);
     }
 }

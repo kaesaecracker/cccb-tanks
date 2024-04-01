@@ -1,4 +1,4 @@
-import {bulletsSettings, displaySettings, mapSettings} from './settings.js';
+import {displaySettings, mapSettings} from './settings.js';
 
 export default class BulletsManager {
     bullets = [];
@@ -9,12 +9,15 @@ export default class BulletsManager {
     }
 
     tick() {
-        for (let i = 0; i < this.bullets.length; i++) {
-            if (this._move(this.bullets[i])) {
-                this.bullets.splice(i, 1);
-                i--;
-            }
+        for (const b of this.bullets){
+            this._move(b);
+            if (this._bulletHits(b))
+                this.bullets.splice(this.bullets.indexOf(b), 1);
         }
+    }
+
+    add(bullet){
+        this.bullets.push(bullet);
     }
 
     _move(bullet) {
@@ -31,12 +34,12 @@ export default class BulletsManager {
         const x0 = Math.floor(x / displaySettings.tileWidth);
         const y0 = Math.floor(y / displaySettings.tileWidth);
         if (mapSettings.map[x0 + mapSettings.mapWidth * y0] === '#') {
+            console.log('bullet hits wall', {x, y, x0, y0});
             return true;
         }
 
         // check against players
-        for (let i = 0; i < this._playerMgr.players.length; i++) {
-            const other = this._playerMgr.players[i];
+        for (const other of this._playerMgr.players) {
             if (other === bullet.owner) continue;
 
             const dx = x - other.x;
@@ -44,25 +47,13 @@ export default class BulletsManager {
 
             if (dx >= 0 && dx < displaySettings.tileWidth &&
                 dy >= 0 && dy < displaySettings.tileWidth) {
-                this._playerMgr.killPlayer(other);
+                this._playerMgr.kill(other);
                 this._playerMgr.playerScore(bullet.owner);
+                console.log('bullet hits player', {x, y, fromPlayer: bullet.owner.name, toPlayer: other.name});
                 return true;
             }
         }
 
         return false;
-    }
-
-    shootBullet(player) {
-        const angle = player.dir / 16 * 2 * Math.PI;
-        const newX = player.x + displaySettings.tileSize / 2 + Math.sin(angle) * bulletsSettings.bulletSpeed;
-        const newY = player.y + displaySettings.tileSize / 2 - Math.cos(angle) * bulletsSettings.bulletSpeed;
-
-        this.bullets.push({
-            x: newX,
-            y: newY,
-            dir: player.dir,
-            owner: player
-        });
     }
 }

@@ -1,110 +1,53 @@
-import {displaySettings, mapSettings, playerSettings} from './settings.js';
+import {displaySettings, mapSettings} from './settings.js';
 
 export default class PlayerManager {
+    _playersToJoin = [];
+    _nextId = 0;
     players = [];
 
-    addPlayer(id, name, connection) {
-        const emptyPos = this._findEmptyPos();
-        const player = {
-            id: id,
-            x: emptyPos[0] * displaySettings.tileWidth,
-            y: emptyPos[1] * displaySettings.tileWidth,
-            dir: randInt(0, 16),
-            score: 0,
-            input: {},
-            name: name,
-            connection: connection
+    add(player) {
+        player.id = this._nextId++;
+
+        player.score = 0;
+        player.input = {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+            shoot: false
         };
-        console.log('adding ' + player.name + ' at ' + player.x + ',' + player.y + ',' + player.id);
-        this.players.push(player);
+
+        console.log('adding player to join queue', {id: player.id, x: player.x, y: player.y});
+        this._playersToJoin.push(player);
         return player;
     }
 
-    removePlayer(id) {
+    remove(player) {
         console.log(`user $(id) left`);
-        this.players.splice(this._findPlayerIndex(id), 1);
-    }
-
-    _findPlayerIndex(id) {
-        for (let i = 0; i < this.players.length; i++) {
-            if (this.players[i].id === id)
-                return i;
-        }
-    }
-
-    _canMove(player, x, y) {
-        x = Math.round(x);
-        y = Math.round(y);
-        const x0 = Math.floor(x / displaySettings.tileWidth);
-        const x1 = Math.ceil(x / displaySettings.tileWidth);
-        const y0 = Math.floor(y / displaySettings.tileWidth);
-        const y1 = Math.ceil(y / displaySettings.tileWidth);
-        const points = [[x0, y0], [x0, y1], [x1, y0], [x1, y1]];
-        //check against tilemap
-        for (let i = 0; i < points.length; i++) {
-            const px = points[i][0];
-            const py = points[i][1];
-            if (mapSettings.map[px + mapSettings.mapWidth * py] === '#') {
-                return false;
-            }
-        }
-
-        //check against other players
-        const p1x = x;
-        const p1y = y;
-        for (let i = 0; i < this.players.length; i++) {
-            const other = this.players[i];
-            if (other === player)
-                continue;
-
-            let dx = Math.abs(other.x - p1x);
-            let dy = Math.abs(other.y - p1y);
-
-            if (dx < displaySettings.tileWidth && dy < displaySettings.tileWidth) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    _movePlayer(player) {
-        // move turret
-        if (player.input.left)
-            player.dir = (player.dir + 16 - playerSettings.turnSpeed) % 16;
-        if (player.input.right)
-            player.dir = (player.dir + playerSettings.turnSpeed) % 16;
-
-        // move tank
-        if (player.input.up || player.input.down) {
-            const direction = player.input.up ? 1 : -1;
-            const angle = player.dir / 16 * 2 * Math.PI;
-            const newX = player.x + Math.sin(angle) * direction * playerSettings.tankSpeed;
-            const newY = player.y - Math.cos(angle) * direction * playerSettings.tankSpeed;
-            if (this._canMove(player, newX, newY)) {
-                player.x = newX;
-                player.y = newY;
-            } else if (this._canMove(player, newX, player.y)) {
-                player.x = newX;
-            } else if (this._canMove(player, player.x, newY)) {
-                player.y = newY;
-            }
-        }
+        this.players = this.players.filter(p => p !== player);
     }
 
     tick() {
-        for (let i = 0; i < this.players.length; i++) {
-            this._movePlayer(this.players[i]);
-        }
+        const joiningPlayer = this._playersToJoin.shift();
+        if (!joiningPlayer)
+            return;
+
+        this._resetPosition(joiningPlayer);
+        joiningPlayer.dir = randInt(0, 16);
+
+        console.log('player joins game');
+        this.players.push(joiningPlayer);
     }
 
-    killPlayer(player) {
-        player.connection.send(JSON.stringify({
-            type: 'shot'
-        }));
+    kill(player) {
+        player.connection.send(JSON.stringify({type: 'shot'}));
+        this._resetPosition(player);
+    }
+
+    _resetPosition(player) {
         const emptyPos = this._findEmptyPos();
-        player.x = emptyPos[0] * displaySettings.tileWidth;
-        player.y = emptyPos[1] * displaySettings.tileWidth;
+        player.x = emptyPos.x;
+        player.y = emptyPos.y;
     }
 
     playerScore(player) {
@@ -117,8 +60,7 @@ export default class PlayerManager {
         if (mapSettings.map[x + mapSettings.mapWidth * y] === '#') {
             result.push('#');
         }
-        for (let i = 0; i < this.players.length; i++) {
-            const p = this.players[i];
+        for (const p of this.players) {
             const x0 = Math.floor(p.x / displaySettings.tileWidth);
             const x1 = Math.ceil(p.x / displaySettings.tileWidth);
             const y0 = Math.floor(p.y / displaySettings.tileWidth);
@@ -132,15 +74,20 @@ export default class PlayerManager {
 
     _findEmptyPos() {
         const candidatePositions = [];
-        for (let i = 0; i < mapSettings.mapWidth; i++) {
-            for (let j = 0; j < mapSettings.mapHeight; j++) {
-                const contents = this._squareContents(i, j);
+        for (let x = 0; x < mapSettings.mapWidth; x++) {
+            for (let y = 0; y < mapSettings.mapHeight; y++) {
+                const contents = this._squareContents(x, y);
                 if (contents.length === 0) {
-                    candidatePositions.push([i, j]);
+                    candidatePositions.push({x, y});
                 }
             }
         }
-        return randomElem(candidatePositions);
+
+        const location = randomElem(candidatePositions);
+        return {
+            x: location.x * displaySettings.tileWidth,
+            y: location.y * displaySettings.tileWidth
+        };
     }
 }
 

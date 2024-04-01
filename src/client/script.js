@@ -24,7 +24,7 @@ const keyEventListener = (type) => (event) => {
         'ArrowUp': 'up',
         'ArrowRight': 'right',
         'ArrowDown': 'down',
-        'Space': 'space',
+        'Space': 'shoot',
         'KeyW': 'up',
         'KeyA': 'left',
         'KeyS': 'down',

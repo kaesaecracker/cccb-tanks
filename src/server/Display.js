@@ -14,7 +14,7 @@ export default class Display {
     }
 
     sendPixels() {
-        const packedBytes = new Buffer(10 + this.pixels.length / 8);
+        const packedBytes = Buffer.alloc(10 + this.pixels.length / 8);
 
         packedBytes[0] = 0;
         packedBytes[1] = 19;
@@ -40,7 +40,7 @@ export default class Display {
     }
 
     placeText(text, x, y, width, height) {
-        const packedBytes = new Buffer(10 + text.length);
+        const packedBytes = Buffer.alloc(10 + text.length);
 
         packedBytes[0] = 0;
         packedBytes[1] = 3;
@@ -61,7 +61,7 @@ export default class Display {
     }
 
     _clearScreen() {
-        const buffer = new Buffer(2);
+        const buffer = Buffer.alloc(2);
         buffer[0] = 0;
         buffer[1] = 2;
         this._client.send(buffer, 0, 2, displaySettings.port, displaySettings.ip);
