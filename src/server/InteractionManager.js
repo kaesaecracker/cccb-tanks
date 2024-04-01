@@ -14,10 +14,14 @@ export default class InteractionManager {
     }
 
     _shootBullet(player) {
+        if (player.shootAfter > Date.now())
+            return;
+
         const angle = player.dir / 16 * 2 * Math.PI;
         const newX = player.x + displaySettings.tileSize / 2 + Math.sin(angle) * bulletsSettings.bulletSpeed;
         const newY = player.y + displaySettings.tileSize / 2 - Math.cos(angle) * bulletsSettings.bulletSpeed;
 
+        player.shootAfter = new Date(new Date().getTime() + (1000 * playerSettings.shootDelay))
         this._bulletMgr.add({
             x: newX,
             y: newY,

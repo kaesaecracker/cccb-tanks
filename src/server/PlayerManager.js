@@ -6,20 +6,9 @@ export default class PlayerManager {
     _playersToPlace = [];
 
     join(player) {
-        player.score = 0;
-        player.respawnAfter = Date.now();
-        player.input = {
-            up: false,
-            down: false,
-            left: false,
-            right: false,
-            shoot: false
-        };
-
         console.log('player joins', {name: player.name});
         this._players.push(player)
         this._playersToPlace.push(player);
-        return player;
     }
 
     leave(player) {
@@ -50,7 +39,7 @@ export default class PlayerManager {
     kill(player) {
         player.connection.send(JSON.stringify({type: 'shot'}));
         this._playersOnField = this._playersOnField.filter(p => p !== player);
-        player.respawnAfter =  new Date(new Date().getTime() + (1000 * playerSettings.respawnDelay));
+        player.respawnAfter = new Date(new Date().getTime() + (1000 * playerSettings.respawnDelay));
         this._playersToPlace.push(player);
     }
 

@@ -3,6 +3,7 @@ import PlayerManager from './PlayerManager.js';
 import BulletsManager from './BulletsManager.js';
 import Drawer from './Drawer.js';
 import InteractionManager from './InteractionManager.js';
+import Player from './Player.js';
 
 export default class TankServer {
     _display = new Display();
@@ -23,7 +24,7 @@ export default class TankServer {
 
     onConnection(connection) {
         console.log('client connected');
-        let player = {connection};
+        let player = new Player(connection);
         let self = this;
 
         function onMessage(message) {
