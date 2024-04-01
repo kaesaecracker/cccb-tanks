@@ -1,4 +1,3 @@
-
 export const displaySettings = {
     ip: '172.23.42.29',
     port: 2342,
@@ -13,10 +12,10 @@ export const bulletsSettings = {
 export const playerSettings = {
     tankSpeed: 1.5,
     turnSpeed: 0.5
-}
+};
 
 const mapWidth = 44;
-const map = "\
+const map = '\
 ############################################\
 #...................##.....................#\
 #...................##.....................#\
@@ -37,10 +36,10 @@ const map = "\
 #...................##.....................#\
 #...................##.....................#\
 ############################################\
-";
+';
 
 export const mapSettings = {
     map,
     mapWidth,
     mapHeight: map.length / mapWidth,
-}
+};

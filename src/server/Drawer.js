@@ -1,9 +1,9 @@
-import fs from "fs";
-import {PNG} from "pngjs";
-import {displaySettings, mapSettings} from "./settings.js";
+import fs from 'fs';
+import {PNG} from 'pngjs';
+import {displaySettings, mapSettings} from './settings.js';
 
 export default class Drawer {
-    _tankSprite = []
+    _tankSprite = [];
     _tankSpriteWidth;
     _display;
     _playerMgr;
@@ -22,33 +22,33 @@ export default class Drawer {
                 for (let y = 0; y < this.height; y++) {
                     for (let x = 0; x < this.width; x++, i++) {
                         const idx = (this.width * y + x) << 2;
-                        self._tankSprite[i] = this.data[idx + 2] > 128 ? 1 : 0
+                        self._tankSprite[i] = this.data[idx + 2] > 128 ? 1 : 0;
                     }
                 }
-                self._tankSpriteWidth = this.width
+                self._tankSpriteWidth = this.width;
             });
     }
 
     _drawWall(tile_x, tile_y) {
-        let i = 0
+        let i = 0;
         for (let dy = 0; dy < displaySettings.tileSize; dy++) {
             for (let dx = i % 2; dx < displaySettings.tileSize; dx += 2, i++) {
                 // y
-                i = (tile_y * displaySettings.tileSize + dy) * this._display.width
+                i = (tile_y * displaySettings.tileSize + dy) * this._display.width;
 
                 // x
-                i += tile_x * displaySettings.tileSize + dx
+                i += tile_x * displaySettings.tileSize + dx;
 
                 // draw
-                this._display.pixels[i] = 1
+                this._display.pixels[i] = 1;
             }
         }
     }
 
     _drawPlayer(pixel_x, pixel_y, dir) {
-        pixel_x = Math.round(pixel_x)
-        pixel_y = Math.round(pixel_y)
-        dir = Math.round(dir) % 16
+        pixel_x = Math.round(pixel_x);
+        pixel_y = Math.round(pixel_y);
+        dir = Math.round(dir) % 16;
 
         for (let dy = 0; dy < displaySettings.tileSize; dy++) {
             for (let dx = 0; dx < displaySettings.tileSize; dx++) {
@@ -56,16 +56,16 @@ export default class Drawer {
                 let i = (pixel_y + dy) * this._display.width;
 
                 // x
-                i += pixel_x + dx
+                i += pixel_x + dx;
 
                 // draw
-                this._display.pixels[i] = this._tankSpriteAt(dx, dy, dir) | this._display.pixels[i]
+                this._display.pixels[i] = this._tankSpriteAt(dx, dy, dir) | this._display.pixels[i];
             }
         }
     }
 
     _drawBullet(pixel_x, pixel_y) {
-        this._display.pixels[Math.round(pixel_y) * this._display.width + Math.round(pixel_x)] = 1
+        this._display.pixels[Math.round(pixel_y) * this._display.width + Math.round(pixel_x)] = 1;
     }
 
     _tankSpriteAt(dx, dy, dir) {
@@ -74,7 +74,7 @@ export default class Drawer {
         const x = (dir % 4) * (displaySettings.tileSize + 1);
         const y = Math.floor(dir / 4) * (displaySettings.tileSize + 1);
 
-        return this._tankSprite[(y + dy) * this._tankSpriteWidth + x + dx]
+        return this._tankSprite[(y + dy) * this._tankSpriteWidth + x + dx];
     }
 
     draw() {
@@ -94,8 +94,8 @@ export default class Drawer {
             const b = this._bulletMgr.bullets[i];
             this._drawBullet(b.x, b.y);
         }
-        this._display.sendPixels()
-        this._drawScoreboard()
+        this._display.sendPixels();
+        this._drawScoreboard();
     }
 
     _drawScoreboard() {
@@ -106,28 +106,28 @@ export default class Drawer {
 
         const playerCopy = this._playerMgr.players.slice();
         playerCopy.sort(function (a, b) {
-            return b.score - a.score
-        })
+            return b.score - a.score;
+        });
 
-        let text = "  TANKS!  ";
+        let text = '  TANKS!  ';
         for (let i = 0; i < Math.min(playerCopy.length, playerRows); i++) {
             const score = playerCopy[i].score.toString();
             const nameLength = maxLength - score.length - 1;
 
             const name = playerCopy[i].name.slice(0, nameLength);
-            const spaces = " ".repeat(nameLength - name.length + 1);
+            const spaces = ' '.repeat(nameLength - name.length + 1);
 
-            text += name + spaces + score
+            text += name + spaces + score;
         }
 
         if (playerCopy.length < playerRows) {
             const missingRows = playerRows - playerCopy.length;
-            text += " ".repeat(missingRows * maxLength)
+            text += ' '.repeat(missingRows * maxLength);
         }
 
-        text += "Join here:"
-        text += " 172.23    .42.96   "
+        text += 'Join here:';
+        text += ' 172.23    .42.96   ';
 
-        this._display.placeText(text, mapSettings.mapWidth + 1, 0, maxLength, maxRows)
+        this._display.placeText(text, mapSettings.mapWidth + 1, 0, maxLength, maxRows);
     }
 }

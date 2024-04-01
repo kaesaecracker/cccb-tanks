@@ -1,4 +1,4 @@
-import {displaySettings, mapSettings, playerSettings} from "./settings.js";
+import {displaySettings, mapSettings, playerSettings} from './settings.js';
 
 export default class PlayerManager {
     players = [];
@@ -15,26 +15,26 @@ export default class PlayerManager {
             name: name,
             connection: connection
         };
-        console.log("adding " + player.name + " at " + player.x + "," + player.y + "," + player.id);
+        console.log('adding ' + player.name + ' at ' + player.x + ',' + player.y + ',' + player.id);
         this.players.push(player);
         return player;
     }
 
     removePlayer(id) {
-        console.log(`user $(id) left`)
-        this.players.splice(this._findPlayerIndex(id), 1)
+        console.log(`user $(id) left`);
+        this.players.splice(this._findPlayerIndex(id), 1);
     }
 
     _findPlayerIndex(id) {
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[i].id === id)
-                return i
+                return i;
         }
     }
 
     _canMove(player, x, y) {
-        x = Math.round(x)
-        y = Math.round(y)
+        x = Math.round(x);
+        y = Math.round(y);
         const x0 = Math.floor(x / displaySettings.tileWidth);
         const x1 = Math.ceil(x / displaySettings.tileWidth);
         const y0 = Math.floor(y / displaySettings.tileWidth);
@@ -55,25 +55,25 @@ export default class PlayerManager {
         for (let i = 0; i < this.players.length; i++) {
             const other = this.players[i];
             if (other === player)
-                continue
+                continue;
 
             let dx = Math.abs(other.x - p1x);
             let dy = Math.abs(other.y - p1y);
 
             if (dx < displaySettings.tileWidth && dy < displaySettings.tileWidth) {
-                return false
+                return false;
             }
         }
 
-        return true
+        return true;
     }
 
     _movePlayer(player) {
         // move turret
         if (player.input.left)
-            player.dir = (player.dir + 16 - playerSettings.turnSpeed) % 16
+            player.dir = (player.dir + 16 - playerSettings.turnSpeed) % 16;
         if (player.input.right)
-            player.dir = (player.dir + playerSettings.turnSpeed) % 16
+            player.dir = (player.dir + playerSettings.turnSpeed) % 16;
 
         // move tank
         if (player.input.up || player.input.down) {
@@ -82,40 +82,40 @@ export default class PlayerManager {
             const newX = player.x + Math.sin(angle) * direction * playerSettings.tankSpeed;
             const newY = player.y - Math.cos(angle) * direction * playerSettings.tankSpeed;
             if (this._canMove(player, newX, newY)) {
-                player.x = newX
-                player.y = newY
+                player.x = newX;
+                player.y = newY;
             } else if (this._canMove(player, newX, player.y)) {
-                player.x = newX
+                player.x = newX;
             } else if (this._canMove(player, player.x, newY)) {
-                player.y = newY
+                player.y = newY;
             }
         }
     }
 
     tick() {
         for (let i = 0; i < this.players.length; i++) {
-            this._movePlayer(this.players[i])
+            this._movePlayer(this.players[i]);
         }
     }
 
     killPlayer(player) {
         player.connection.send(JSON.stringify({
             type: 'shot'
-        }))
+        }));
         const emptyPos = this._findEmptyPos();
-        player.x = emptyPos[0] * displaySettings.tileWidth
+        player.x = emptyPos[0] * displaySettings.tileWidth;
         player.y = emptyPos[1] * displaySettings.tileWidth;
     }
 
     playerScore(player) {
-        player.score++
+        player.score++;
     }
 
     //in tile coordinates
     _squareContents(x, y) {
         let result = [];
         if (mapSettings.map[x + mapSettings.mapWidth * y] === '#') {
-            result.push("#");
+            result.push('#');
         }
         for (let i = 0; i < this.players.length; i++) {
             const p = this.players[i];
