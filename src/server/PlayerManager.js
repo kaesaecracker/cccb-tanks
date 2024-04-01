@@ -2,12 +2,9 @@ import {displaySettings, mapSettings} from './settings.js';
 
 export default class PlayerManager {
     _playersToJoin = [];
-    _nextId = 0;
     players = [];
 
     add(player) {
-        player.id = this._nextId++;
-
         player.score = 0;
         player.input = {
             up: false,
@@ -17,13 +14,13 @@ export default class PlayerManager {
             shoot: false
         };
 
-        console.log('adding player to join queue', {id: player.id, x: player.x, y: player.y});
+        console.log('adding player to join queue', {name: player.name, x: player.x, y: player.y});
         this._playersToJoin.push(player);
         return player;
     }
 
     remove(player) {
-        console.log(`user $(id) left`);
+        console.log('player left', {name: player.name});
         this.players = this.players.filter(p => p !== player);
     }
 
