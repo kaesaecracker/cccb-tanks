@@ -14,14 +14,15 @@ export default class InteractionManager {
     }
 
     _shootBullet(player) {
-        if (player.shootAfter > Date.now())
+        if (player.shootAfter >= Date.now())
             return;
 
+        player.shootAfter = new Date(new Date().getTime() + (1000 * playerSettings.shootDelay));
         const angle = player.dir / 16 * 2 * Math.PI;
         const newX = player.x + displaySettings.tileSize / 2 + Math.sin(angle) * bulletsSettings.bulletSpeed;
         const newY = player.y + displaySettings.tileSize / 2 - Math.cos(angle) * bulletsSettings.bulletSpeed;
 
-        player.shootAfter = new Date(new Date().getTime() + (1000 * playerSettings.shootDelay))
+        console.log('player shooting', player.name)
         this._bulletMgr.add({
             x: newX,
             y: newY,
@@ -79,11 +80,16 @@ export default class InteractionManager {
             if (this._canMove(player, newX, newY)) {
                 player.x = newX;
                 player.y = newY;
+                return true;
             } else if (this._canMove(player, newX, player.y)) {
                 player.x = newX;
+                return true;
             } else if (this._canMove(player, player.x, newY)) {
                 player.y = newY;
+                return true;
             }
         }
+
+        return false;
     }
 }

@@ -9,11 +9,14 @@ export default class BulletsManager {
     }
 
     tick() {
+        const bulletsToRemove = [];
         for (const b of this._bullets) {
             this._move(b);
             if (this._bulletHits(b))
-                this._bullets.splice(this._bullets.indexOf(b), 1);
+                bulletsToRemove.push(b)
         }
+
+        this._bullets = this._bullets.filter(b => !bulletsToRemove.includes(b))
     }
 
     add(bullet) {

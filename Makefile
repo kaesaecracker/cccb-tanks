@@ -3,3 +3,6 @@ docker-image:
 
 start:
 	node run start
+
+restore:
+	npm i

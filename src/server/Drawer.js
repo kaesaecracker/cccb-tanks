@@ -129,7 +129,7 @@ export default class Drawer {
         }
 
         text += '--  join  --';
-        text += ' http://127 ';
+        text += ' http://172 ';
         text += ' .23.42.96/ ';
 
         this._display.placeText(text, mapSettings.mapWidth, 0, maxLength, maxRows);
