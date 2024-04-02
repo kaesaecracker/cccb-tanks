@@ -64,11 +64,11 @@ export default class Drawer {
         }
     }
 
-    private _drawBullet(pixel_x, pixel_y) {
+    private _drawBullet(pixel_x: number, pixel_y: number) {
         this._display.pixels[Math.round(pixel_y) * this._display.width + Math.round(pixel_x)] = 1;
     }
 
-    private _tankSpriteAt(dx, dy, dir) {
+    private _tankSpriteAt(dx: number, dy: number, dir: number) {
         // 0 1 2 3 4 5
         // up ...... right
         const x = (dir % 4) * (displaySettings.tileSize + 1);

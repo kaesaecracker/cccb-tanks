@@ -51,7 +51,8 @@ export default class TankServer {
                     return;
                 }
 
-                player[message.value] = message.type === 'input-on';
+                // @ts-expect-error we checked in the line above and input only contains booleans
+                player.input[message.value] = message.type === 'input-on';
                 return;
             }
 

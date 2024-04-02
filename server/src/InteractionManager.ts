@@ -1,6 +1,7 @@
 import {displaySettings, mapSettings, playerSettings} from './settings';
 import BulletsManager from './BulletsManager';
 import PlayerManager from './PlayerManager';
+import Player from './Player';
 
 export default class InteractionManager {
     private _bulletMgr: BulletsManager;
@@ -18,25 +19,25 @@ export default class InteractionManager {
         }
     }
 
-    private _shootBullet(player) {
-        if (player.shootAfter >= Date.now())
+    private _shootBullet(player: Player) {
+        if (player.tankState.shootAfter >= Date.now())
             return;
 
-        player.shootAfter = new Date(new Date().getTime() + (1000 * playerSettings.shootDelay));
-        const angle = player.dir / 16 * 2 * Math.PI;
-        const newX = player.x + displaySettings.tileSize / 2 + Math.sin(angle) * playerSettings.bulletSpeed;
-        const newY = player.y + displaySettings.tileSize / 2 - Math.cos(angle) * playerSettings.bulletSpeed;
+        player.tankState.shootAfter = Date.now() + (1000 * playerSettings.shootDelay);
+        const angle = player.tankState.dir / 16 * 2 * Math.PI;
+        const newX = player.tankState.x + displaySettings.tileSize / 2 + Math.sin(angle) * playerSettings.bulletSpeed;
+        const newY = player.tankState.y + displaySettings.tileSize / 2 - Math.cos(angle) * playerSettings.bulletSpeed;
 
         console.log('player shooting', player.name);
         this._bulletMgr.add({
             x: newX,
             y: newY,
-            dir: player.dir,
+            dir: player.tankState.dir,
             owner: player
         });
     }
 
-    private _canMove(player, x, y) {
+    private _canMove(player: Player, x: number, y: number) {
         x = Math.round(x);
         y = Math.round(y);
         const x0 = Math.floor(x / displaySettings.tileWidth);
@@ -69,28 +70,28 @@ export default class InteractionManager {
         return true;
     }
 
-    private _movePlayer(player) {
+    private _movePlayer(player: Player) {
         // move turret
         if (player.input.left)
-            player.dir = (player.dir + 16 - playerSettings.turnSpeed) % 16;
+            player.tankState.dir = (player.tankState.dir + 16 - playerSettings.turnSpeed) % 16;
         if (player.input.right)
-            player.dir = (player.dir + playerSettings.turnSpeed) % 16;
+            player.tankState.dir = (player.tankState.dir + playerSettings.turnSpeed) % 16;
 
         // move tank
         if (player.input.up || player.input.down) {
             const direction = player.input.up ? 1 : -1;
-            const angle = player.dir / 16 * 2 * Math.PI;
-            const newX = player.x + Math.sin(angle) * direction * playerSettings.tankSpeed;
-            const newY = player.y - Math.cos(angle) * direction * playerSettings.tankSpeed;
+            const angle = player.tankState.dir / 16 * 2 * Math.PI;
+            const newX = player.tankState.x + Math.sin(angle) * direction * playerSettings.tankSpeed;
+            const newY = player.tankState.y - Math.cos(angle) * direction * playerSettings.tankSpeed;
             if (this._canMove(player, newX, newY)) {
-                player.x = newX;
-                player.y = newY;
+                player.tankState.x = newX;
+                player.tankState.y = newY;
                 return true;
-            } else if (this._canMove(player, newX, player.y)) {
-                player.x = newX;
+            } else if (this._canMove(player, newX, player.tankState.y)) {
+                player.tankState.x = newX;
                 return true;
-            } else if (this._canMove(player, player.x, newY)) {
-                player.y = newY;
+            } else if (this._canMove(player, player.tankState.x, newY)) {
+                player.tankState.y = newY;
                 return true;
             }
         }

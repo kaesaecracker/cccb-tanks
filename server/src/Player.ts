@@ -10,7 +10,7 @@ export default class Player {
         down: false,
         left: false,
         right: false,
-        shoot: false
+        shoot: false,
     };
     tankState = {
         dir: 0,
