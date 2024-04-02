@@ -1,5 +1,8 @@
+import {WebSocket} from "ws";
+
 export default class Player {
-    connection;
+    connection: WebSocket | null;
+    name?: string;
     score = 0;
     respawnAfter = 0;
     input = {
@@ -9,13 +12,14 @@ export default class Player {
         right: false,
         shoot: false
     };
-    name;
-    shootAfter = 0;
-    dir;
-    x;
-    y;
+    tankState = {
+        dir: 0,
+        x: 0,
+        y: 0,
+        shootAfter: 0,
+    }
 
-    constructor(connection) {
+    constructor(connection: WebSocket) {
         this.connection = connection;
     }
 }

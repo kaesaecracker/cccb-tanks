@@ -8,7 +8,7 @@ export const displaySettings = {
 export const playerSettings = {
     tankSpeed: 1.5,
     turnSpeed: 0.5,
-    respawnDelay: 3,
+    respawnDelaySeconds: 3,
     shootDelay: 0.3,
     bulletSpeed: 8
 };

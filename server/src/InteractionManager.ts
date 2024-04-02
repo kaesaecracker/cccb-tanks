@@ -1,7 +1,12 @@
 import {displaySettings, mapSettings, playerSettings} from './settings.js';
+import BulletsManager from "./BulletsManager";
+import PlayerManager from "./PlayerManager";
 
 export default class InteractionManager {
-    constructor(bulletMgr, playerMgr) {
+    private _bulletMgr: BulletsManager;
+    private _playerMgr: PlayerManager;
+
+    constructor(bulletMgr: BulletsManager, playerMgr: PlayerManager) {
         this._bulletMgr = bulletMgr;
         this._playerMgr = playerMgr;
     }
@@ -13,7 +18,7 @@ export default class InteractionManager {
         }
     }
 
-    _shootBullet(player) {
+    private _shootBullet(player) {
         if (player.shootAfter >= Date.now())
             return;
 
@@ -31,7 +36,7 @@ export default class InteractionManager {
         });
     }
 
-    _canMove(player, x, y) {
+    private _canMove(player, x, y) {
         x = Math.round(x);
         y = Math.round(y);
         const x0 = Math.floor(x / displaySettings.tileWidth);
@@ -53,8 +58,8 @@ export default class InteractionManager {
             if (other === player)
                 continue;
 
-            let dx = Math.abs(other.x - p1x);
-            let dy = Math.abs(other.y - p1y);
+            let dx = Math.abs(other.tankState.x - p1x);
+            let dy = Math.abs(other.tankState.y - p1y);
 
             if (dx < displaySettings.tileWidth && dy < displaySettings.tileWidth) {
                 return false;
@@ -64,7 +69,7 @@ export default class InteractionManager {
         return true;
     }
 
-    _movePlayer(player) {
+    private _movePlayer(player) {
         // move turret
         if (player.input.left)
             player.dir = (player.dir + 16 - playerSettings.turnSpeed) % 16;

@@ -3,18 +3,18 @@ import PlayerManager from './PlayerManager';
 import BulletsManager from './BulletsManager';
 import Drawer from './Drawer.js';
 import InteractionManager from './InteractionManager.js';
-import Player from './Player.js';
+import Player from './Player';
 import {Message} from "./Message.js";
 import {WebSocket} from 'ws';
 import {serverSettings} from "./settings";
 
 export default class TankServer {
-    _display = new Display();
-    _playerManager = new PlayerManager();
-    _bullets = new BulletsManager(this._playerManager);
-    _drawer = new Drawer(this._display, this._bullets, this._playerManager);
-    _interactionManager = new InteractionManager(this._bullets, this._playerManager);
-    _idleAfter = Date.now();
+    private _display = new Display();
+    private _playerManager = new PlayerManager();
+    private _bullets = new BulletsManager(this._playerManager);
+    private _drawer = new Drawer(this._display, this._bullets, this._playerManager);
+    private _interactionManager = new InteractionManager(this._bullets, this._playerManager);
+    private _idleAfter = Date.now();
 
     constructor() {
         this._drawer.draw();
