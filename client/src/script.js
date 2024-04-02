@@ -1,5 +1,3 @@
-import './styles.css'
-
 const body = document.querySelector('body');
 const splash = document.querySelector('.splash');
 
