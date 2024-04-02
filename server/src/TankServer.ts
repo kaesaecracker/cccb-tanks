@@ -30,26 +30,26 @@ export default class TankServer {
         let self = this;
 
         function handleMessage(message: Message) {
-            switch (message.type) {
-                case 'input-on':
-                    if (!message.value)
-                        throw new Error('message is missing value');
-
-                    // @ts-ignore TODO: do not use user input to read arbitrary data
-                    player.input[parsedMessage.value] = true;
-                    break;
-                case 'input-off':
-                    // @ts-ignore TODO: do not use user input to read arbitrary data
-                    player.input[parsedMessage.value] = false;
-                    break;
-                case 'name':
-                    player.name = message.value;
-                    player = self._playerManager.join(player);
-
-                    break;
-                default:
-                    console.log('unknown command', message.type);
+            if (message.type === 'name') {
+                player.name = message.value;
+                player = self._playerManager.join(player);
+                return;
             }
+
+            if (message.type === 'input-on' || message.type === 'input-off') {
+                if (!message.value)
+                    throw new Error('message is missing value');
+
+                if (!(message.value in player.input)) {
+                    console.error('unknown input', message.value);
+                    return;
+                }
+
+                player[message.value] = message.type === 'input-on';
+                return;
+            }
+
+            console.log('unknown command', message.type);
         }
 
         function onMessage(message: string) {
