@@ -1,8 +1,7 @@
+clean:
+	rm -r dist
+
+dist:
+
 docker-image:
 	podman build .
-
-start:
-	node run start
-
-restore:
-	npm i

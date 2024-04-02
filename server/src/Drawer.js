@@ -16,7 +16,7 @@ export default class Drawer {
 
         const self = this;
 
-        const pngData = fs.readFileSync('images/tank.png');
+        const pngData = fs.readFileSync('assets/tank.png');
         const png = PNG.sync.read(pngData, {filterType: 4});
         let i = 0;
         for (let y = 0; y < png.height; y++) {

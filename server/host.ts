@@ -1,6 +1,6 @@
 import express from 'express';
 import express_ws from 'express-ws';
-import TankServer from './server/TankServer.js';
+import TankServer from './src/TankServer';
 
 const app = express();
 const port = process.env.PORT || 3000;

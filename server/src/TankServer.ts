@@ -1,10 +1,10 @@
 import Display from './Display.js';
-import PlayerManager from './PlayerManager.js';
-import BulletsManager from './BulletsManager.js';
+import PlayerManager from './PlayerManager';
+import BulletsManager from './BulletsManager';
 import Drawer from './Drawer.js';
 import InteractionManager from './InteractionManager.js';
 import Player from './Player.js';
-import {Message} from "../Message.js";
+import {Message} from "./Message.js";
 import {WebSocket} from 'ws';
 
 export default class TankServer {
