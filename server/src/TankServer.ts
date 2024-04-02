@@ -29,30 +29,34 @@ export default class TankServer {
         let player = new Player(connection);
         let self = this;
 
+        function handleMessage(message: Message) {
+            switch (message.type) {
+                case 'input-on':
+                    if (!message.value)
+                        throw new Error('message is missing value');
+
+                    // @ts-ignore TODO: do not use user input to read arbitrary data
+                    player.input[parsedMessage.value] = true;
+                    break;
+                case 'input-off':
+                    // @ts-ignore TODO: do not use user input to read arbitrary data
+                    player.input[parsedMessage.value] = false;
+                    break;
+                case 'name':
+                    player.name = message.value;
+                    player = self._playerManager.join(player);
+
+                    break;
+                default:
+                    console.log('unknown command', message.type);
+            }
+        }
+
         function onMessage(message: string) {
             try {
                 const parsedMessage = JSON.parse(message) as Message;
                 console.log('received message', {parsedMessage, player: player.name});
-                switch (parsedMessage.type) {
-                    case 'input-on':
-                        if (!parsedMessage.value)
-                            throw new Error('message is missing value');
-
-                        // @ts-ignore TODO: do not use user input to read arbitrary data
-                        player.input[parsedMessage.value] = true;
-                        break;
-                    case 'input-off':
-                        // @ts-ignore TODO: do not use user input to read arbitrary data
-                        player.input[parsedMessage.value] = false;
-                        break;
-                    case 'name':
-                        player.name = parsedMessage.value;
-                        player = self._playerManager.join(player);
-
-                        break;
-                    default:
-                        console.log('unknown command', parsedMessage.type);
-                }
+                handleMessage(parsedMessage);
             } catch (e) {
                 console.error('closing connection because of error', e)
                 connection.close();
@@ -64,10 +68,7 @@ export default class TankServer {
             self._playerManager.leave(player);
         }
 
-        // TODO: move to .onmessage=
-        // @ts-ignore
         connection.on('message', onMessage);
-        // @ts-ignore
         connection.on('close', onClose);
     }
 }
