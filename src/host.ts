@@ -9,8 +9,7 @@ const tankServer = new TankServer();
 
 app.use(express.static('client'));
 
-express_ws(app);
-app.ws('/', client => tankServer.onConnection(client));
+express_ws(app).app.ws('/', client => tankServer.onConnection(client));
 
 app.listen(port, () => {
     console.log(`listening on port ${port}`);

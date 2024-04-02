@@ -15,18 +15,17 @@ export default class Drawer {
         this._playerMgr = playerMgr;
 
         const self = this;
-        fs.createReadStream('images/tank.png')
-            .pipe(new PNG({filterType: 4}))
-            .on('parsed', function () {
-                let i = 0;
-                for (let y = 0; y < this.height; y++) {
-                    for (let x = 0; x < this.width; x++, i++) {
-                        const idx = (this.width * y + x) << 2;
-                        self._tankSprite[i] = this.data[idx + 2] > 128 ? 1 : 0;
-                    }
-                }
-                self._tankSpriteWidth = this.width;
-            });
+
+        const pngData = fs.readFileSync('images/tank.png');
+        const png = PNG.sync.read(pngData, {filterType: 4});
+        let i = 0;
+        for (let y = 0; y < png.height; y++) {
+            for (let x = 0; x < png.width; x++, i++) {
+                const idx = (png.width * y + x) << 2;
+                self._tankSprite[i] = png.data[idx + 2] > 128 ? 1 : 0;
+            }
+        }
+        self._tankSpriteWidth = png.width;
     }
 
     _drawWall(tile_x, tile_y) {

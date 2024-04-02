@@ -1,6 +1,9 @@
 const body = document.querySelector('body');
 const splash = document.querySelector('.splash');
 
+if (!splash || ! body)
+    throw new Error('body or splash not found');
+
 splash.addEventListener('transitionend', function () {
     body.classList.remove('was-killed');
 });
@@ -59,7 +62,7 @@ connection.onopen = () => {
 };
 
 function getPlayerName() {
-    let name = '';
+    let name;
     while (!name)
         name = prompt('Player Name');
     return name;

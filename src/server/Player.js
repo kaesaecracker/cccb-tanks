@@ -11,6 +11,9 @@ export default class Player {
     };
     name;
     shootAfter = 0;
+    dir;
+    x;
+    y;
 
     constructor(connection) {
         this.connection = connection;

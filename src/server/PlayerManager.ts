@@ -1,11 +1,12 @@
 import {displaySettings, mapSettings, playerSettings} from './settings.js';
+import Player from "./Player.js";
 
 export default class PlayerManager {
-    _players = [];
-    _playersOnField = [];
-    _playersToPlace = [];
+    _players: Player[] = [];
+    _playersOnField: Player[] = [];
+    _playersToPlace: Player[] = [];
 
-    join(player) {
+    join(player: Player) {
         const existingPlayer = this._players.find(p => p.name === player.name);
         if (existingPlayer) {
             if (existingPlayer.connection !== null)
@@ -36,8 +37,7 @@ export default class PlayerManager {
             return;
 
         const now = Date.now();
-        if (playerToPlace.respawnAfter > now)
-        {
+        if (playerToPlace.respawnAfter > now) {
             this._playersToPlace.push(playerToPlace);
             return;
         }
@@ -56,7 +56,7 @@ export default class PlayerManager {
         this._playersToPlace.push(player);
     }
 
-    getPlayersOnField(){
+    getPlayersOnField() {
         return this._playersOnField;
     }
 
@@ -76,7 +76,7 @@ export default class PlayerManager {
 
     //in tile coordinates
     _squareContents(x, y) {
-        let result = [];
+        let result: (String|Player)[] = [];
         if (mapSettings.map[x + mapSettings.mapWidth * y] === '#') {
             result.push('#');
         }
@@ -93,7 +93,7 @@ export default class PlayerManager {
     }
 
     _findEmptyPos() {
-        const candidatePositions = [];
+        const candidatePositions: { x: number, y: number }[] = [];
         for (let x = 0; x < mapSettings.mapWidth; x++) {
             for (let y = 0; y < mapSettings.mapHeight; y++) {
                 const contents = this._squareContents(x, y);
@@ -112,10 +112,10 @@ export default class PlayerManager {
 }
 
 
-function randomElem(ar) {
+function randomElem<T>(ar: T[]): T {
     return ar[Math.floor(Math.random() * ar.length)];
 }
 
-function randInt(min, max) {
+function randInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min)) + min;
 }
