@@ -1,4 +1,4 @@
-import {WebSocket} from "ws";
+import {WebSocket} from 'ws';
 
 export default class Player {
     connection: WebSocket | null;
@@ -17,7 +17,7 @@ export default class Player {
         x: 0,
         y: 0,
         shootAfter: 0,
-    }
+    };
 
     constructor(connection: WebSocket) {
         this.connection = connection;

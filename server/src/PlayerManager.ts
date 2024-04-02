@@ -1,5 +1,5 @@
-import {displaySettings, mapSettings, playerSettings} from './settings.js';
-import Player from "./Player";
+import {displaySettings, mapSettings, playerSettings} from './settings';
+import Player from './Player';
 
 export default class PlayerManager {
     private _players: Player[] = [];
@@ -76,7 +76,7 @@ export default class PlayerManager {
 
     //in tile coordinates
     private _squareContents(x: number, y: number) {
-        let result: (String | Player)[] = [];
+        const result: (string | Player)[] = [];
         if (mapSettings.map[x + mapSettings.mapWidth * y] === '#') {
             result.push('#');
         }

@@ -1,6 +1,6 @@
-import {displaySettings, mapSettings} from './settings.js';
-import PlayerManager from "./PlayerManager";
-import {Bullet} from "./Bullet";
+import {displaySettings, mapSettings} from './settings';
+import PlayerManager from './PlayerManager';
+import {Bullet} from './Bullet';
 
 export default class BulletsManager {
     private _bullets: Bullet[] = [];
@@ -15,10 +15,10 @@ export default class BulletsManager {
         for (const b of this._bullets) {
             this._move(b);
             if (this._bulletHits(b))
-                bulletsToRemove.push(b)
+                bulletsToRemove.push(b);
         }
 
-        this._bullets = this._bullets.filter(b => !bulletsToRemove.includes(b))
+        this._bullets = this._bullets.filter(b => !bulletsToRemove.includes(b));
     }
 
     add(bullet: Bullet) {

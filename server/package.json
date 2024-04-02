@@ -16,6 +16,7 @@
         "@typescript-eslint/eslint-plugin": "^7.5.0",
         "@typescript-eslint/parser": "^7.5.0",
         "eslint": "^8.57.0",
+        "eslint-plugin-import": "^2.29.1",
         "ts-loader": "^9.5.1",
         "typescript": "^5.4.3",
         "webpack": "^5.91.0",
@@ -24,6 +25,7 @@
     "scripts": {
         "build-release": "npx webpack --mode=production && cp -r assets ../dist/assets/",
         "build-debug": "npx webpack --mode=development",
-        "start": "npm run build-debug && cd ../dist && node host.js"
+        "start": "npm run build-debug && 1cd ../dist && node host.js",
+        "lint": "npx eslint ."
     }
 }

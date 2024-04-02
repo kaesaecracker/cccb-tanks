@@ -1,9 +1,9 @@
 import fs from 'fs';
 import {PNG} from 'pngjs';
-import {displaySettings, mapSettings} from './settings.js';
-import Display from "./Display";
-import BulletsManager from "./BulletsManager";
-import PlayerManager from "./PlayerManager";
+import {displaySettings, mapSettings} from './settings';
+import Display from './Display';
+import BulletsManager from './BulletsManager';
+import PlayerManager from './PlayerManager';
 
 export default class Drawer {
     private _tankSprite: (0 | 1)[] = [];

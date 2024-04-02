@@ -1,6 +1,6 @@
-import {displaySettings, mapSettings, playerSettings} from './settings.js';
-import BulletsManager from "./BulletsManager";
-import PlayerManager from "./PlayerManager";
+import {displaySettings, mapSettings, playerSettings} from './settings';
+import BulletsManager from './BulletsManager';
+import PlayerManager from './PlayerManager';
 
 export default class InteractionManager {
     private _bulletMgr: BulletsManager;
@@ -27,7 +27,7 @@ export default class InteractionManager {
         const newX = player.x + displaySettings.tileSize / 2 + Math.sin(angle) * playerSettings.bulletSpeed;
         const newY = player.y + displaySettings.tileSize / 2 - Math.cos(angle) * playerSettings.bulletSpeed;
 
-        console.log('player shooting', player.name)
+        console.log('player shooting', player.name);
         this._bulletMgr.add({
             x: newX,
             y: newY,
@@ -58,8 +58,8 @@ export default class InteractionManager {
             if (other === player)
                 continue;
 
-            let dx = Math.abs(other.tankState.x - p1x);
-            let dy = Math.abs(other.tankState.y - p1y);
+            const dx = Math.abs(other.tankState.x - p1x);
+            const dy = Math.abs(other.tankState.y - p1y);
 
             if (dx < displaySettings.tileWidth && dy < displaySettings.tileWidth) {
                 return false;

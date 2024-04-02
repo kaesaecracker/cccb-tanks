@@ -1,12 +1,12 @@
-import Display from './Display.js';
+import Display from './Display';
 import PlayerManager from './PlayerManager';
 import BulletsManager from './BulletsManager';
-import Drawer from './Drawer.js';
-import InteractionManager from './InteractionManager.js';
+import Drawer from './Drawer';
+import InteractionManager from './InteractionManager';
 import Player from './Player';
-import {Message} from "./Message.js";
+import {Message} from './Message';
 import {WebSocket} from 'ws';
-import {serverSettings} from "./settings";
+import {serverSettings} from './settings';
 
 export default class TankServer {
     private _display = new Display();
@@ -56,7 +56,7 @@ export default class TankServer {
             }
 
             console.log('unknown command', message.type);
-        }
+        };
 
         const onMessage = (message: string) => {
             try {
@@ -64,7 +64,7 @@ export default class TankServer {
                 console.log('received message', {parsedMessage, player: player.name});
                 handleMessage(parsedMessage);
             } catch (e) {
-                console.error('closing connection because of error', e)
+                console.error('closing connection because of error', e);
                 connection.close();
             }
         };

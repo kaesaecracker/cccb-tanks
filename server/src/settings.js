@@ -45,4 +45,4 @@ export const mapSettings = {
 
 export const serverSettings= {
     idleTimeoutMinutes: 5,
-}
+};
