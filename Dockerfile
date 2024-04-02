@@ -20,7 +20,7 @@ RUN npm run build
 # server build
 COPY server /app/server
 WORKDIR /app/server
-RUN npm run build
+RUN npm run build-release
 
 FROM node:current-alpine AS runtime
 COPY --from=build /app/dist /app

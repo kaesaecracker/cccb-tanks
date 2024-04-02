@@ -23,7 +23,4 @@ Run it locally (you will need node+npm):
 - [ ] destructible walls (shoot each led individually)
 - [ ] collectible power ups
 - [ ] dual screen gameplay (player-specific info on own screen)
-
-### ToDos
-- Dockerfile currently leaves source code, devDependencies and node_modules in final container.
-  Should be split into one container for building and one for running the app.
+- [ ] idle screen (more help when no one is currently playing)

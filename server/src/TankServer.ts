@@ -6,6 +6,7 @@ import InteractionManager from './InteractionManager.js';
 import Player from './Player.js';
 import {Message} from "./Message.js";
 import {WebSocket} from 'ws';
+import {serverSettings} from "./settings";
 
 export default class TankServer {
     _display = new Display();
@@ -13,10 +14,14 @@ export default class TankServer {
     _bullets = new BulletsManager(this._playerManager);
     _drawer = new Drawer(this._display, this._bullets, this._playerManager);
     _interactionManager = new InteractionManager(this._bullets, this._playerManager);
+    _idleAfter = Date.now();
 
     constructor() {
         this._drawer.draw();
         setInterval(() => {
+            if (this._idleAfter < Date.now())
+                return;
+
             this._interactionManager.tick();
             this._bullets.tick();
             this._playerManager.tick();
@@ -27,12 +32,13 @@ export default class TankServer {
     onConnection(connection: WebSocket) {
         console.log('client connected');
         let player = new Player(connection);
-        let self = this;
 
-        function handleMessage(message: Message) {
+        const handleMessage = (message: Message) => {
+            this._idleAfter = Date.now() + (serverSettings.idleTimeoutMinutes * 60 * 1000);
+
             if (message.type === 'name') {
                 player.name = message.value;
-                player = self._playerManager.join(player);
+                player = this._playerManager.join(player);
                 return;
             }
 
@@ -52,7 +58,7 @@ export default class TankServer {
             console.log('unknown command', message.type);
         }
 
-        function onMessage(message: string) {
+        const onMessage = (message: string) => {
             try {
                 const parsedMessage = JSON.parse(message) as Message;
                 console.log('received message', {parsedMessage, player: player.name});
@@ -61,12 +67,12 @@ export default class TankServer {
                 console.error('closing connection because of error', e)
                 connection.close();
             }
-        }
+        };
 
-        function onClose() {
+        const onClose = () => {
             player.connection = null;
-            self._playerManager.leave(player);
-        }
+            this._playerManager.leave(player);
+        };
 
         connection.on('message', onMessage);
         connection.on('close', onClose);

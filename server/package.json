@@ -21,8 +21,8 @@
         "webpack-cli": "^5.1.4"
     },
     "scripts": {
-        "build": "npx webpack && cp -r assets ../dist/assets/",
-        "watch": "node_modules/.bin/tsc -w",
-        "start": "cd ../dist && node host.js"
+        "build-release": "npx webpack --mode=production && cp -r assets ../dist/assets/",
+        "build-debug": "npx webpack --mode=development",
+        "start": "npm run build-debug && cd ../dist && node host.js"
     }
 }

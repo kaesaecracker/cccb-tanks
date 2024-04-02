@@ -1,4 +1,4 @@
-import {bulletsSettings, displaySettings, mapSettings, playerSettings} from './settings.js';
+import {displaySettings, mapSettings, playerSettings} from './settings.js';
 
 export default class InteractionManager {
     constructor(bulletMgr, playerMgr) {
@@ -19,8 +19,8 @@ export default class InteractionManager {
 
         player.shootAfter = new Date(new Date().getTime() + (1000 * playerSettings.shootDelay));
         const angle = player.dir / 16 * 2 * Math.PI;
-        const newX = player.x + displaySettings.tileSize / 2 + Math.sin(angle) * bulletsSettings.bulletSpeed;
-        const newY = player.y + displaySettings.tileSize / 2 - Math.cos(angle) * bulletsSettings.bulletSpeed;
+        const newX = player.x + displaySettings.tileSize / 2 + Math.sin(angle) * playerSettings.bulletSpeed;
+        const newY = player.y + displaySettings.tileSize / 2 - Math.cos(angle) * playerSettings.bulletSpeed;
 
         console.log('player shooting', player.name)
         this._bulletMgr.add({
