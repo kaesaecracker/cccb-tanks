@@ -1,10 +1,12 @@
 import {WebSocket} from 'ws';
+import {Message} from './Message';
 
 export default class Player {
     connection: WebSocket | null;
     name?: string;
     score = 0;
     respawnAfter = 0;
+    wantsDisplayUpdate = false;
     input = {
         up: false,
         down: false,
@@ -12,6 +14,7 @@ export default class Player {
         right: false,
         shoot: false,
     };
+
     tankState = {
         dir: 0,
         x: 0,
@@ -21,5 +24,9 @@ export default class Player {
 
     constructor(connection: WebSocket) {
         this.connection = connection;
+    }
+
+    send(msg: Message) {
+        this.connection?.send(JSON.stringify(msg));
     }
 }

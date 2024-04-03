@@ -25,7 +25,7 @@
     "scripts": {
         "build-release": "npx webpack --mode=production && cp -r assets ../dist/assets/",
         "build-debug": "npx webpack --mode=development",
-        "start": "npm run build-debug && 1cd ../dist && node host.js",
+        "start": "npm run build-debug && cd ../dist && node host.js",
         "lint": "npx eslint ."
     }
 }

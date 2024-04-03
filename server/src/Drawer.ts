@@ -29,7 +29,7 @@ export default class Drawer {
         this._tankSpriteWidth = png.width;
     }
 
-    private _drawWall(tile_x: number, tile_y: number) {
+    private _drawWall(pixels: Uint8Array, tile_x: number, tile_y: number) {
         let i = 0;
         for (let dy = 0; dy < displaySettings.tileSize; dy++) {
             for (let dx = i % 2; dx < displaySettings.tileSize; dx += 2, i++) {
@@ -40,32 +40,28 @@ export default class Drawer {
                 i += tile_x * displaySettings.tileSize + dx;
 
                 // draw
-                this._display.pixels[i] = 1;
+                pixels[i] = 1;
             }
         }
     }
 
-    private _drawPlayer(pixel_x: number, pixel_y: number, dir: number) {
+    private _drawPlayer(pixels: Uint8Array, pixel_x: number, pixel_y: number, dir: number) {
         pixel_x = Math.round(pixel_x);
         pixel_y = Math.round(pixel_y);
         dir = Math.round(dir) % 16;
 
         for (let dy = 0; dy < displaySettings.tileSize; dy++) {
+            const rowStartIndex = (pixel_y + dy) * this._display.width;
+
             for (let dx = 0; dx < displaySettings.tileSize; dx++) {
-                // y
-                let i = (pixel_y + dy) * this._display.width;
-
-                // x
-                i += pixel_x + dx;
-
-                // draw
-                this._display.pixels[i] = this._tankSpriteAt(dx, dy, dir) | this._display.pixels[i];
+                const i = rowStartIndex + pixel_x + dx;
+                pixels[i] |= this._tankSpriteAt(dx, dy, dir);
             }
         }
     }
 
-    private _drawBullet(pixel_x: number, pixel_y: number) {
-        this._display.pixels[Math.round(pixel_y) * this._display.width + Math.round(pixel_x)] = 1;
+    private _drawBullet(pixels: Uint8Array, pixel_x: number, pixel_y: number) {
+        pixels[Math.round(pixel_y) * this._display.width + Math.round(pixel_x)] = 1;
     }
 
     private _tankSpriteAt(dx: number, dy: number, dir: number) {
@@ -77,25 +73,23 @@ export default class Drawer {
         return this._tankSprite[(y + dy) * this._tankSpriteWidth + x + dx];
     }
 
-    draw() {
-        this._display.clearCanvas();
+    draw(pixels: Uint8Array) {
         for (let i = 0; i < mapSettings.mapWidth; i++) {
             for (let j = 0; j < mapSettings.mapHeight; j++) {
                 if (mapSettings.map[i + mapSettings.mapWidth * j] === '#') {
-                    this._drawWall(i, j);
+                    this._drawWall(pixels, i, j);
                 }
             }
         }
 
         for (const p of this._playerMgr.getPlayersOnField()) {
-            this._drawPlayer(p.tankState.x, p.tankState.y, p.tankState.dir);
+            this._drawPlayer(pixels, p.tankState.x, p.tankState.y, p.tankState.dir);
         }
 
         for (const b of this._bulletMgr.getBullets()) {
-            this._drawBullet(b.x, b.y);
+            this._drawBullet(pixels, b.x, b.y);
         }
 
-        this._display.sendPixels();
         this._drawScoreboard();
     }
 

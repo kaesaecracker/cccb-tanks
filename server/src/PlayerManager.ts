@@ -50,7 +50,7 @@ export default class PlayerManager {
     }
 
     kill(player: Player) {
-        player.connection?.send(JSON.stringify({type: 'shot'}));
+        player.send({type: 'shot'});
         this._playersOnField = this._playersOnField.filter(p => p !== player);
         player.respawnAfter = Date.now() + (1000 * playerSettings.respawnDelaySeconds);
         this._playersToPlace.push(player);

@@ -10,7 +10,7 @@ export const playerSettings = {
     turnSpeed: 0.5,
     respawnDelaySeconds: 3,
     shootDelay: 0.3,
-    bulletSpeed: 8
+    bulletSpeed: 8,
 };
 
 const mapWidth = 44;
@@ -45,4 +45,5 @@ export const mapSettings = {
 
 export const serverSettings= {
     idleTimeoutMinutes: 5,
+    pixelSendDelayMs: 3000,
 };

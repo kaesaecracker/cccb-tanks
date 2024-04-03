@@ -7,14 +7,14 @@ export default class Display {
     width = displaySettings.tileSize * mapSettings.mapWidth;
     height = displaySettings.tileSize * mapSettings.mapHeight;
 
-    pixels = new Uint8Array(this.width * this.height);
+    createPixelBuffer = () => new Uint8Array(this.width * this.height);
 
     constructor() {
         this._clearScreen();
     }
 
-    sendPixels() {
-        const packedBytes = Buffer.alloc(10 + this.pixels.length / 8);
+    sendPixels(pixels: Uint8Array) {
+        const packedBytes = Buffer.alloc(10 + pixels.length / 8);
 
         packedBytes[0] = 0;
         packedBytes[1] = 19;
@@ -27,11 +27,11 @@ export default class Display {
         packedBytes[8] = this.height / 256;
         packedBytes[9] = this.height % 256;
 
-        for (let i = 0, n = 10, l = this.pixels.length; i < l; n++) {
+        for (let i = 0, n = 10, l = pixels.length; i < l; n++) {
             let sum = 0;
 
             for (let j = 128; j > 0; j = (j >> 1)) {
-                sum += this.pixels[i++] ? j : 0;
+                sum += pixels[i++] ? j : 0;
             }
             packedBytes[n] = sum;
         }
@@ -39,7 +39,7 @@ export default class Display {
         this._client.send(packedBytes, 0, packedBytes.length, displaySettings.port, displaySettings.ip);
     }
 
-    placeText(text, x, y, width, height) {
+    placeText(text: string, x: number, y: number, width: number, height: number) {
         const packedBytes = Buffer.alloc(10 + text.length);
 
         packedBytes[0] = 0;
@@ -65,9 +65,5 @@ export default class Display {
         buffer[0] = 0;
         buffer[1] = 2;
         this._client.send(buffer, 0, 2, displaySettings.port, displaySettings.ip);
-    }
-
-    clearCanvas() {
-        this.pixels = new Uint8Array(this.width * this.height);
     }
 }
