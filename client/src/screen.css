@@ -1,23 +1,5 @@
 
 #screen {
-    aspect-ratio: 1;
+    aspect-ratio: calc(352/160);
     width: calc(min(1vh, 1vw) * 90);
-
-    display: grid;
-    grid-template-columns: repeat(calc(8 * 44), 1fr);
-
-}
-
-.pixel {
-    width: auto;
-    height: auto;
-    border: 1px darkgray;
-}
-
-.on {
-    background: green;
-}
-
-.off {
-    background: darkgray;
 }

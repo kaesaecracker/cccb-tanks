@@ -92,7 +92,7 @@ export default class TankServer {
         connection.on('close', onClose);
     }
 
-    private logicPhase(){
+    private logicPhase() {
         this._interactionManager.tick();
         this._bullets.tick();
         this._playerManager.tick();
