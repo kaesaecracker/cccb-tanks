@@ -5,15 +5,12 @@ export const displaySettings = {
     tileSize: 8,
 };
 
-export const bulletsSettings = {
-    bulletSpeed: 8
-};
-
 export const playerSettings = {
     tankSpeed: 1.5,
     turnSpeed: 0.5,
-    respawnDelay: 3,
+    respawnDelaySeconds: 3,
     shootDelay: 0.3,
+    bulletSpeed: 8,
 };
 
 const mapWidth = 44;
@@ -44,4 +41,9 @@ export const mapSettings = {
     map,
     mapWidth,
     mapHeight: map.length / mapWidth,
+};
+
+export const serverSettings= {
+    idleTimeoutMinutes: 5,
+    pixelSendDelayMs: 100,
 };

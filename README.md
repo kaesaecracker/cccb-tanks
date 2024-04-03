@@ -23,3 +23,4 @@ Run it locally (you will need node+npm):
 - [ ] destructible walls (shoot each led individually)
 - [ ] collectible power ups
 - [ ] dual screen gameplay (player-specific info on own screen)
+- [ ] idle screen (more help when no one is currently playing)

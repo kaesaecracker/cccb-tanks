@@ -1,5 +1,10 @@
+import {renderPixelString} from './screen.js';
+
 const body = document.querySelector('body');
 const splash = document.querySelector('.splash');
+
+if (!splash || ! body)
+    throw new Error('required element not found');
 
 splash.addEventListener('transitionend', function () {
     body.classList.remove('was-killed');
@@ -13,17 +18,19 @@ connection.onmessage = function (message) {
     console.log('got message', {message});
     if (message.type === 'shot')
         body.classList.add('was-killed');
+    else if (message.type === 'pixel-data')
+        renderPixelString(message.value);
 };
 
 connection.onerror = event => {
-    console.log('error', event)
-    alert('connection error')
-}
+    console.log('error', event);
+    alert('connection error');
+};
 
 connection.onclose = event => {
-    console.log('closed', event)
-    alert('connection closed - maybe a player with this name is already connected')
-}
+    console.log('closed', event);
+    alert('connection closed - maybe a player with this name is already connected');
+};
 
 const keyEventListener = (type) => (event) => {
     if (event.defaultPrevented)
@@ -59,7 +66,7 @@ connection.onopen = () => {
 };
 
 function getPlayerName() {
-    let name = '';
+    let name;
     while (!name)
         name = prompt('Player Name');
     return name;
