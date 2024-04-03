@@ -11,6 +11,11 @@ body {
     justify-content: center;
 }
 
+main {
+    display: flex;
+    flex-direction: column;
+}
+
 kbd {
     background: hsl(0, 0%, 96%);
     padding: 10px;

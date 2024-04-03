@@ -1,8 +1,8 @@
-import {displaySettings, mapSettings} from './settings.js';
+import {displaySettings, mapSettings} from './settings';
 import dgram from 'dgram';
 
 export default class Display {
-    _client = dgram.createSocket('udp4');
+    private _client = dgram.createSocket('udp4');
 
     width = displaySettings.tileSize * mapSettings.mapWidth;
     height = displaySettings.tileSize * mapSettings.mapHeight;
@@ -13,7 +13,7 @@ export default class Display {
         this._clearScreen();
     }
 
-    sendPixels(pixels: Uint8Array) {
+    send(pixels: Uint8Array) {
         const packedBytes = Buffer.alloc(10 + pixels.length / 8);
 
         packedBytes[0] = 0;
@@ -60,7 +60,7 @@ export default class Display {
         this._client.send(packedBytes, 0, packedBytes.length, displaySettings.port, displaySettings.ip);
     }
 
-    _clearScreen() {
+    private _clearScreen() {
         const buffer = Buffer.alloc(2);
         buffer[0] = 0;
         buffer[1] = 2;

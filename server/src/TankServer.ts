@@ -7,18 +7,8 @@ import Player from './Player';
 import {Message} from './Message';
 import {WebSocket} from 'ws';
 import {serverSettings} from './settings';
+import ClientScreenManager from './ClientScreenManager';
 
-const pixelStringReducer = (str: string, pixel: number) => str + (pixel === 0 ? '0' : '1');
-
-function arraysEqual(a: Uint8Array, b: Uint8Array) {
-    if (a.length != b.length)
-        return false;
-    for (const [index, aValue] of a.entries()) {
-        if (aValue !== b[index])
-            return false;
-    }
-    return true;
-}
 
 export default class TankServer {
     private _display = new Display();
@@ -27,10 +17,10 @@ export default class TankServer {
     private _drawer = new Drawer(this._display, this._bullets, this._playerManager);
     private _interactionManager = new InteractionManager(this._bullets, this._playerManager);
     private _idleAfter = Date.now();
-    private _lastPixels = this._display.createPixelBuffer();
-    private _nextPixelSendAt = 0;
+    private _clientScreenManager: ClientScreenManager;
 
-    constructor() {
+    constructor(clientScreenManager: ClientScreenManager) {
+        this._clientScreenManager = clientScreenManager;
         setInterval(this._onTick, 1000 / 25);
     }
 
@@ -99,31 +89,10 @@ export default class TankServer {
     }
 
     private graphicsPhase = () => {
-        // logic phase
-        // graphics  phase
         const nextPixels = this._display.createPixelBuffer();
         this._drawer.draw(nextPixels);
 
-        // do not send pixels if not needed
-        if (arraysEqual(nextPixels, this._lastPixels))
-            return;
-
-        this._display.sendPixels(nextPixels);
-
-        // only send to clients periodically
-        if (Date.now() < this._nextPixelSendAt)
-            return;
-
-        this._lastPixels = nextPixels;
-        this._nextPixelSendAt = Date.now() + serverSettings.pixelSendDelayMs;
-
-        const pixelsAs01 = nextPixels.reduce(pixelStringReducer, '');
-        const pixelMessage: Message = {
-            'type': 'pixel-data',
-            'value': pixelsAs01
-        };
-        for (const p of this._playerManager.getPlayersOnField()) {
-            p.send(pixelMessage);
-        }
+        this._display.send(nextPixels);
+        this._clientScreenManager.send(nextPixels);
     };
 }

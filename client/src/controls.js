@@ -1,4 +1,4 @@
-import {renderPixelString} from './screen.js';
+import './controls.css';
 
 const body = document.querySelector('body');
 const splash = document.querySelector('.splash');
@@ -18,8 +18,6 @@ connection.onmessage = function (message) {
     console.log('got message', {message});
     if (message.type === 'shot')
         body.classList.add('was-killed');
-    else if (message.type === 'pixel-data')
-        renderPixelString(message.value);
 };
 
 connection.onerror = event => {
