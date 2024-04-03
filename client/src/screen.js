@@ -1,31 +1,43 @@
 import './screen.css';
 
-const screenDiv = document.querySelector('#screen');
-if (!screenDiv)
+const canvas = document.querySelector('#screen');
+if (!canvas)
     throw new Error('required element not found');
 
-const drawContext = screenDiv.getContext('2d');
+const drawContext = canvas.getContext('2d');
 if (drawContext === null)
     throw new Error('cannot get 2d context');
 
 const connection = new WebSocket(`ws://${window.location.hostname}:3000/screen`);
 connection.binaryType = 'arraybuffer';
 
-const pixelsPerRow = 44 * 8;
-const rows = 160;
+connection.onerror = console.log;
+connection.onclose = console.log;
+
 connection.onmessage = function (message) {
     const pixels = new Uint8Array(message.data);
+    const imageData = drawContext.getImageData(0, 0, canvas.width, canvas.height, {colorSpace: 'srgb'});
+    const data = imageData.data;
 
-    for (let y = 0; y < rows; y++) {
-        const rowStartIndex = y * pixelsPerRow;
+    for (let i = 0; i < canvas.width * canvas.height; i++) {
+        const pixel = pixels[i];
+        const dataIndex = 4 * i;
 
-        for (let x = 0; x < pixelsPerRow; x++) {
-            const pixel = pixels[rowStartIndex + x];
-            drawContext.fillStyle = pixel === 1 ? 'green' : 'darkgrey';
-            drawContext.fillRect(x, y, 1, 1);
+        if (pixel === 0) {
+            data[dataIndex] = 0; // r
+            data[dataIndex + 1] = 0; // g
+            data[dataIndex + 2] = 0; // b
+            data[dataIndex + 3] = 255; // a
+        } else {
+            data[dataIndex] = 255; // r
+            data[dataIndex + 1] = 255; // g
+            data[dataIndex + 2] = 255; // b
+            data[dataIndex + 3] = 255; // a
         }
+
     }
 
+    drawContext.putImageData(imageData, 0, 0);
     connection.send('');
 };
 
