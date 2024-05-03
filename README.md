@@ -1,3 +1,7 @@
+# ARCHIVED
+
+This fork is not updated anymore. See https://github.com/kaesaecracker/cccb-tanks-cs for my current version.
+
 # tanks
 A tank game for the CCCB Airport Display.
 
